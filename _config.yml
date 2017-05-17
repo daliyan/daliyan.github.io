@@ -3,12 +3,13 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Akiyama的个人博客
-subtitle:
+title: 绉嬪北
+subtitle: 瑕佷箞璇讳功瑕佷箞鏃呰锛岃韩浣撳拰鐏甸瓊蹇呴』鏈変竴涓湪璺笂
 description:
 author: zhiwu_yan
-language: UTF-8
+language: zh-Hans 
 timezone:
+favicon: /favicon.png
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
@@ -63,7 +64,7 @@ pagination_dir: page
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: landscape
+theme: simple
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
