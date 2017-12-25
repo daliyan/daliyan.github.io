@@ -1,0 +1,1128 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="android,动态更新,最佳实践,观察者模式," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.png?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="在上一篇文章中介绍了介绍了观察者模式的定义和一些基本概念，观察者模式在 android开发中应用还是非常广泛的，例如android按钮事件的监听、广播等等，在任何类似于新闻-订阅的模式下面都可以使用。从某种意义上面来说android有点像JAVA EE的WEB页面，在都需要提供View层用于进行操作，在多个页面之间传递数据发送通知都是一件很麻烦的事情。 在android中从A页面跳转到B页面，然后">
+<meta name="keywords" content="android,动态更新,最佳实践,观察者模式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="观察者模式在android 上的最佳实践">
+<meta property="og:url" content="http://yoursite.com/2015/05/09/观察者模式在android 上的最佳实践/index.html">
+<meta property="og:site_name" content="秋山">
+<meta property="og:description" content="在上一篇文章中介绍了介绍了观察者模式的定义和一些基本概念，观察者模式在 android开发中应用还是非常广泛的，例如android按钮事件的监听、广播等等，在任何类似于新闻-订阅的模式下面都可以使用。从某种意义上面来说android有点像JAVA EE的WEB页面，在都需要提供View层用于进行操作，在多个页面之间传递数据发送通知都是一件很麻烦的事情。 在android中从A页面跳转到B页面，然后">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://www.yesky.com/20020603/observer.gif">
+<meta property="og:updated_time" content="2017-12-25T15:51:29.299Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="观察者模式在android 上的最佳实践">
+<meta name="twitter:description" content="在上一篇文章中介绍了介绍了观察者模式的定义和一些基本概念，观察者模式在 android开发中应用还是非常广泛的，例如android按钮事件的监听、广播等等，在任何类似于新闻-订阅的模式下面都可以使用。从某种意义上面来说android有点像JAVA EE的WEB页面，在都需要提供View层用于进行操作，在多个页面之间传递数据发送通知都是一件很麻烦的事情。 在android中从A页面跳转到B页面，然后">
+<meta name="twitter:image" content="http://www.yesky.com/20020603/observer.gif">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2015/05/09/观察者模式在android 上的最佳实践/"/>
+
+
+
+
+
+  <title>观察者模式在android 上的最佳实践 | 秋山</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=62198010";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">秋山</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">要么读书要么旅行，身体和灵魂必须有一个在路上</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/09/观察者模式在android 上的最佳实践/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhiwu_yan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="秋山">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">观察者模式在android 上的最佳实践</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-09T23:02:36+08:00">
+                2015-05-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在上一篇文章中介绍了介绍了观察者模式的定义和一些基本概念，观察者模式在 android开发中应用还是非常广泛的，例如android按钮事件的监听、广播等等，在任何类似于新闻-订阅的模式下面都可以使用。从某种意义上面来说android有点像JAVA EE的WEB页面，在都需要提供View层用于进行操作，在多个页面之间传递数据发送通知都是一件很麻烦的事情。</p>
+<p>在android中从A页面跳转到B页面，然后B页面进行某些操作后需要通知A页面去刷新数据，我们可以通过startActivityForResult来唤起B页面，然后再B页面结束后在A页面重写onActivityResult来接收返回结果从而来刷新页面。但是如果跳转路径是这样的A-&gt;B-&gt;C-&gt;…..，C或者C以后的页面来刷新A，这个时候如果还是使用这种方法就会非常的棘手。使用这种方法可能会存在以下几个弊端：</p>
+<ol>
+<li><strong>多个路径或者多个事件的传递处理起来会非常困难。</strong></li>
+<li><strong>数据更新不及时，往往需要用户去等待，降低系统性能和用户体验。</strong></li>
+<li><strong>代码结构混乱，不易编码和扩展。</strong></li>
+</ol>
+<p>因此考虑使用观察者模式去处理这个问题。</p>
+<h2 id="一-需求确定"><a href="#一-需求确定" class="headerlink" title="一.需求确定"></a><strong>一.需求确定</strong></h2><p>在APP中我们有一些设置项目，我们希望在设置完了以后，在主页面能够立即响应，例如QQ的清空聊天记录，我们希望设置了以后回到主页面后会自动清理，有些人可能会认为这是一件很简单的事情，认为回到主页面直接读缓存就好了，缓存里面是什么就是什么，课时这种方案存在2个问题：</p>
+<ul>
+<li>什么时候读取缓存，是每次回到主页面都去刷新吗，这样会太消耗资源，用户体验也不好。</li>
+<li>不能局部刷新数据。</li>
+</ul>
+<p>因此行功能和代码结构上面来看我的需求主要有以下几点：</p>
+<ol>
+<li><strong>能够在某些页面设置完了后直接通知其他监听了这个事件的页面立即刷新，而不需要用户回到某些页面的时候再刷新。</strong></li>
+<li><strong>能够区分是哪些事件通知的，从而针对不同的事件进行不同的处理。</strong></li>
+<li><strong>能够动态的扩展事件类型，可以让调用者很快的注册和监听事件。</strong></li>
+</ol>
+<h2 id="二-系统设计"><a href="#二-系统设计" class="headerlink" title="二.系统设计"></a>二.系统设计</h2><p>从上一篇文章中我们知道一个完整的观察者模式需要这些对象：</p>
+<ol>
+<li><strong>Subject 抽象主题角色：也就是抽象的被观察者对象，里面保存了所有的观察者对象引用列表，提供了注册和反注册的功能。</strong></li>
+<li><strong>ConcreteSubject具体的主题角色：<span class="comment">将有关状态存入各ConcreteObserver对象</span> <span class="comment">   当它的状态发送改变时，向它的各个观察者发出通知</span> 。</strong></li>
+<li><strong>Observer 抽象观察者 ：为所有的具体观察者定义一个接口，在得到通知时更新自己。</strong></li>
+<li><strong>ConcreteObserver 具体观察者：<span class="comment">维护一个指向ConcreteObserver对象的引用</span> ，<span class="comment">存储有关状态，这些状态应与目标的状态保持一致，</span><span class="comment">实现Observer的更新接口是自身状态与目标的状态保持一致</span></strong></li>
+</ol>
+<p><img src="http://www.yesky.com/20020603/observer.gif" alt=""></p>
+<p>针对在android我们需要设计一个一个<strong>抽象的BaseObserverActivity</strong>，让所有的Activity页面都去继承它，从本质上来看继承这个类的所有的Activity都是一个观察者，然后再观察者对象中去定义需要监听是什么类型的事件和根据对应的事件的处理。</p>
+<p><strong>三.具体实现方案</strong></p>
+<p>（1）EventSubjectInterface：抽象的主题角色实现</p>
+<pre class="lang:java decode:true">/**
+ * 抽象的主题角色
+ * @author zhiwu_yan
+ * @since 2015年04月06日
+ * @version 1.0
+ */
+public interface EventSubjectInterface {
+  /**
+     * 注册观察者
+     * @param observer
+     */
+    public void registerObserver(String eventType,EventObserver observer);
+
+    /**
+     * 反注册观察者
+     * @param observer
+     */
+    public void removeObserver(String eventType,EventObserver observer);
+
+    /**
+     * 通知注册的观察者进行数据或者UI的更新
+     */
+    public void notifyObserver(String eventType);
+}</pre>
+
+<p>主要包括了观察者的注册方法和反注册方法以及通知观察者去更新UI的方法，我们来看看具体的实现。</p>
+<p>（2）EventSubject：具体的主题角色的实现</p>
+<pre class="lang:java decode:true">/**
+ * 具体的主题角色的实现，这里用来监听事件的发生，采用单例模式来实现
+ * @author zhiwu_yan
+ * @since 2015年04月06日
+ * @version 1.0
+ */
+public class EventSubject implements EventSubjectInterface{
+private static final String TAG="EventSubject";
+    private Map<string,arraylist<eventobserver>> mEventObservers=new HashMap<string,arraylist<eventobserver>>();
+    private static volatile EventSubject mEventSubject;
+    private EventSubject(){
+
+    }
+
+    public synchronized static EventSubject getInstance(){
+        if(mEventSubject ==null){
+            mEventSubject =new EventSubject();
+        }
+        return mEventSubject;
+    }
+
+    @Override
+    public void registerObserver(String eventType,EventObserver observer) {
+        synchronized (mEventObservers){
+            ArrayList<eventobserver> eventObservers = mEventObservers.get(eventType);
+            if (eventObservers == null) {
+                eventObservers = new ArrayList<eventobserver>();
+                mEventObservers.put(eventType, eventObservers);
+            }
+            if(eventObservers.contains(observer)) {
+                return;
+            }
+            eventObservers.add(observer);
+        }
+
+    }
+
+    @Override
+    public void removeObserver(String eventType,EventObserver observer) {
+        synchronized (mEventObservers){
+            int index = mEventObservers.get(eventType).indexOf(observer);
+            if (index >= 0) {
+                mEventObservers.remove(observer);
+            }
+        }
+    }
+
+    @Override
+    public void notifyObserver(String eventType) {
+        if(mEventObservers!=null && mEventObservers.size()>0 && eventType!=null){
+            ArrayList<eventobserver> eventObservers=mEventObservers.get(eventType);
+            if(eventObservers!=null){
+                for(EventObserver observer:eventObservers){
+                    observer.dispatchChange(eventType);
+                }
+            }else{
+                Log.e(TAG,"eventObservers is null,"+eventType+" may be not register");
+            }
+        }
+
+    }
+}
+</eventobserver></eventobserver></eventobserver></string,arraylist<eventobserver></string,arraylist<eventobserver></pre>
+
+<p>里面要注意的地方是：使用单例模式来控制只有一个主题角色，里面保存了所有的<strong>观察者对象（EventObserver）列表，</strong>也就是护士手中的名单（见上一章），值得一提的是使用synchronized去控制多线程操作的问题。</p>
+<p>（3）EventObserverInterface：抽象观察者对象</p>
+<pre class="lang:java decode:true">/**
+ * 观察者接口
+ * @author zhiwu_yan
+ * @since 2015年04月06日
+ * @version 1.0
+ */
+public interface EventObserverInterface {
+    /**
+     * 根据事件进行数据或者UI的更新
+     * @param eventType
+     */
+    public void dispatchChange(String eventType);
+}</pre>
+
+<p>里面只有一个根据事件类型来跟新UI的方法，我们看看具体的抽象观察者。</p>
+<p>（4）EventObserver：具体的抽线观察者</p>
+<pre class="lang:java decode:true ">/**
+ * 用于更新UI，这里执行更新UI的onChange方法
+ * @author  zhiwu_yan
+ * @since   2015年04月06
+ * @version 1.0
+ */
+public abstract class EventObserver implements EventObserverInterface {
+
+    private Handler mHandler;
+
+    public EventObserver(){
+        mHandler=new Handler(Looper.getMainLooper());
+    }
+
+    public abstract void onChange(String eventType);
+
+    @Override
+    public void dispatchChange(String eventType){
+        mHandler.post(new NotificationRunnable(eventType));
+    }
+
+    private final class NotificationRunnable implements Runnable{
+        private String mEventType;
+        public NotificationRunnable(String eventType){
+            this.mEventType=eventType;
+        }
+        @Override
+        public void run() {
+            EventObserver.this.onChange(mEventType);
+        }
+    }
+}</pre>
+
+<p>我们定义了一个抽象的onChange方法交给子类去实现，这个方法就是用来处理对应的事件类型，比如需要刷新数据等等。因为mHandler.post来跟新UI线程的，所以如果是耗时的操作需要另外开线程去处理。</p>
+<p>（5）前面已经说过了，Android里面我们需要定义一个带观察者模式的BaseActivity用来给某些需要监听的业务的Activity使用，这样只要继承了该Activity的都是一个具体的观察者对象。</p>
+<pre class="lang:java decode:true">/**
+ * 带有观察者模式的Activity,本质上就是观察者
+ * @author  zhiwu_yan
+ * @since  2015年04月6日 20:41
+ * @version 1.0
+ */
+public abstract class BaseObserverActivity extends ActionBarActivity {
+
+    private ActivityEventObserver mActivityEventObserver;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mActivityEventObserver=new ActivityEventObserver(this);
+        registerObserver(mActivityEventObserver);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        removeObserver(mActivityEventObserver);
+    }
+
+    public void registerObserver(EventObserver observer) {
+        final String[] observerEventTypes=getObserverEventType();//获取所有需要监听的业务类型
+        if(observerEventTypes!=null && observerEventTypes.length>0){
+            final EventSubject eventSubject=EventSubject.getInstance();
+            for(String eventType:observerEventTypes){
+                eventSubject.registerObserver(eventType,observer);
+            }
+        }
+    }
+
+    public void removeObserver(EventObserver observer) {
+       final String[] observerEventTypes=getObserverEventType();//获取所有需要监听的业务类型
+        if(observerEventTypes!=null && observerEventTypes.length>0){
+            final EventSubject eventSubject=EventSubject.getInstance();
+            for(String eventType:observerEventTypes){
+                eventSubject.removeObserver(eventType, observer);
+            }
+        }
+    }
+
+    /**
+     * 该方法会在具体的观察者对象中调用，可以根据事件的类型来更新对应的UI，这个方法在UI线程中被调用，
+     * 所以在该方法中不能进行耗时操作，可以另外开线程
+     * @param eventType 事件类型
+     */
+    protected abstract void onChange(String eventType);
+
+    /**
+     * 通过这个方法来告诉具体的观察者需要监听的业务类型
+     * @return
+     */
+    protected abstract String[] getObserverEventType();
+
+    private static class ActivityEventObserver extends EventObserver {
+        //添加弱引用，防止对象不能被回收
+        private final WeakReference&lt;BaseObserverActivity&gt; mActivity;
+        public ActivityEventObserver(BaseObserverActivity activity){
+            super();
+            mActivity=new WeakReference&lt;BaseObserverActivity&gt;(activity);
+        }
+
+        @Override
+        public void onChange(String eventType) {
+            BaseObserverActivity activity=mActivity.get();
+            if(activity!=null){
+                activity.onChange(eventType);
+            }
+        }
+    }
+
+}</pre>
+
+<p>另外我们需要定义一个可以动态扩展的事件类型：EventType</p>
+<pre class="lang:java decode:true ">/**
+ * 所有的业务类型，在这里写，方便管理
+ * @author zhiwu_yan
+ * @since 2015年04月06日
+ * @version 1.0
+ */
+public class EventType {
+
+    private static volatile EventType mEventType;
+    private final static Set&lt;String&gt; eventsTypes = new HashSet&lt;String&gt;();
+
+    public final static String UPDATE_MAIN="com.updateMain";
+    public final static String UPDATE_Text="com.updateText";
+    private EventType(){
+        eventsTypes.add(UPDATE_MAIN);
+        eventsTypes.add(UPDATE_Text);
+    }
+
+    public static EventType getInstance(){
+       if(mEventType==null){
+           mEventType=new EventType();
+       }
+        return mEventType;
+    }
+
+    public boolean contains(String eventType){
+        return eventsTypes.contains(eventType);
+    }
+
+}
+</pre>
+
+<p>我这里主要定义个2个事件类型，如果需要你可以定义N个事件类型，只要把你需要定义的事件添加到事件类表里面去就可以了。</p>
+<p>我们在通知某个页面需要更新的时候只需呀调用如下方法：</p>
+<pre class="lang:java decode:true ">EventSubject eventSubject=EventSubject.getInstance();
+        EventType eventTypes=EventType.getInstance();
+        if(eventTypes.contains(eventType)){
+            eventSubject.notifyObserver(eventType);
+        }</pre>
+
+<p>为了便于管理我们也新建一个工具类：</p>
+<pre class="lang:java decode:true">/**
+ * 通知中心，用来通知更新数据或者UI，采用单例模式
+ * @author zhiwu_yan
+ * @since 2015年04月6日
+ * @version 1.0
+ */
+public class Notify {
+
+    private static volatile Notify mNotify;
+    private Notify(){
+
+    }
+
+    public static Notify getInstance(){
+        if(mNotify==null){
+            mNotify=new Notify();
+        }
+        return mNotify;
+    }
+
+    public void NotifyActivity(String eventType){
+        EventSubject eventSubject=EventSubject.getInstance();
+        EventType eventTypes=EventType.getInstance();
+        if(eventTypes.contains(eventType)){
+            eventSubject.notifyObserver(eventType);
+        }
+    }
+}</pre>
+
+<p>到这里基本的框架就完成，我们看看怎么使用。</p>
+<p><strong>四.使用方法</strong></p>
+<p>定义一个A页面：MainActivity。这个页面是一个观察者，需要监听来自其他页面的一些通知，一旦有修改就根据对应的的事件来做出不同的处理：</p>
+<pre class="lang:java decode:true ">public class MainActivity extends BaseObserverActivity {
+
+    private TextView mLableTv;
+    private ImageView mPicIv;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        mLableTv=(TextView) findViewById(R.id.label_tv);
+        mPicIv=(ImageView) findViewById(R.id.pic_iv);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id){
+            case R.id.go_other_activity:
+                goActivity(OtherActivity.class);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void goActivity(Class&lt;?&gt; activity){
+        Intent intent=new Intent(this,activity);
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onChange(String eventType) {
+        if(EventType.UPDATE_MAIN==eventType){
+            mPicIv.setImageResource(R.mipmap.pic_two);
+        }else if(EventType.UPDATE_Text==eventType){
+            mLableTv.setText("图片被更新");
+        }
+    }
+
+    @Override
+    protected String[] getObserverEventType() {
+        return new String[]{
+                EventType.UPDATE_MAIN,
+                EventType.UPDATE_Text
+        };
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        startActivityForResult();
+    }
+}
+</pre>
+
+<p>主要看一下：onChange 方法：根据事件类型来更新不同的图片，而在getObserverEventType()中我们定义了该观察者需要观察的业务类型，其它业务类型则会被忽略。</p>
+<p>我们的B页面：也就是发出通知的页面，APP上面的设置页面，唯一的作用就是通知观察者：</p>
+<pre class="lang:java decode:true ">public class OtherActivity extends ActionBarActivity {
+    private Button mUpdateBtn;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.other_activity);
+        mUpdateBtn=(Button) findViewById(R.id.update_edit_btn);
+        mUpdateBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Notify.getInstance().NotifyActivity(EventType.UPDATE_Text);
+                Notify.getInstance().NotifyActivity(EventType.UPDATE_MAIN);
+            }
+        });
+    }
+
+}
+</pre>
+
+<p>好，大功告成！</p>
+<p>源码下载地址：<a href="http://www.akiyamayzw.com/wp-content/uploads/2015/05/ObserverUpdateUiExp.rar" target="_blank" rel="noopener">ObserverUpdateUiExp</a></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/android/" rel="tag"># android</a>
+          
+            <a href="/tags/动态更新/" rel="tag"># 动态更新</a>
+          
+            <a href="/tags/最佳实践/" rel="tag"># 最佳实践</a>
+          
+            <a href="/tags/观察者模式/" rel="tag"># 观察者模式</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/04/07/观察者模式/" rel="next" title="观察者模式">
+                <i class="fa fa-chevron-left"></i> 观察者模式
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/05/17/saving-android-view-state-correctly/" rel="prev" title="Saving Android View state correctly">
+                Saving Android View state correctly <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="uyan_frame"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="zhiwu_yan" />
+          <p class="site-author-name" itemprop="name">zhiwu_yan</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一-需求确定"><span class="nav-number">1.</span> <span class="nav-text">一.需求确定</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二-系统设计"><span class="nav-number">2.</span> <span class="nav-text">二.系统设计</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhiwu_yan</span>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    
+
+    
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2133838"></script>
+      <!-- UY END -->
+    
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

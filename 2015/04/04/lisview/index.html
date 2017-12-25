@@ -1,0 +1,815 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.png?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="接着上篇点击,我们使用了ListView 的缓存视图方法去节省加载时间，那么今天我们使用视图缓存+ViewHolder的方法来优化ListView (1)什么是ViewHolder?我们在使用ViewHolder之前我们先理清楚它的概念，从字面意思来理解它的意思是“视图持有者”，我们可以知道他是跟View有关的一个概念，从google文档的官方定义知道他是一个静态类，一般只有属性没有方法，它的作用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="lisView优化（2）">
+<meta property="og:url" content="http://yoursite.com/2015/04/04/lisview/index.html">
+<meta property="og:site_name" content="秋山">
+<meta property="og:description" content="接着上篇点击,我们使用了ListView 的缓存视图方法去节省加载时间，那么今天我们使用视图缓存+ViewHolder的方法来优化ListView (1)什么是ViewHolder?我们在使用ViewHolder之前我们先理清楚它的概念，从字面意思来理解它的意思是“视图持有者”，我们可以知道他是跟View有关的一个概念，从google文档的官方定义知道他是一个静态类，一般只有属性没有方法，它的作用">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://img.blog.csdn.net/20140804224830890?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSVRiYWlsZWk=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+<meta property="og:updated_time" content="2017-12-25T15:51:29.301Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="lisView优化（2）">
+<meta name="twitter:description" content="接着上篇点击,我们使用了ListView 的缓存视图方法去节省加载时间，那么今天我们使用视图缓存+ViewHolder的方法来优化ListView (1)什么是ViewHolder?我们在使用ViewHolder之前我们先理清楚它的概念，从字面意思来理解它的意思是“视图持有者”，我们可以知道他是跟View有关的一个概念，从google文档的官方定义知道他是一个静态类，一般只有属性没有方法，它的作用">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20140804224830890?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSVRiYWlsZWk=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2015/04/04/lisview/"/>
+
+
+
+
+
+  <title>lisView优化（2） | 秋山</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=62198010";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">秋山</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">要么读书要么旅行，身体和灵魂必须有一个在路上</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/04/lisview/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhiwu_yan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="秋山">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">lisView优化（2）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-04T08:58:11+08:00">
+                2015-04-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>接着上篇点击,我们使用了ListView 的缓存视图方法去节省加载时间，那么今天我们使用视图缓存+ViewHolder的方法来优化ListView</p>
+<h4 id="1-什么是ViewHolder"><a href="#1-什么是ViewHolder" class="headerlink" title="(1)什么是ViewHolder?"></a>(1)什么是ViewHolder?</h4><p>我们在使用ViewHolder之前我们先理清楚它的概念，从字面意思来理解它的意思是“视图持有者”，我们可以知道他是跟View有关的一个概念，从google文档的官方定义知道他是一个静态类，一般只有属性没有方法，它的作用就是一个临时存储器，存储视图的一些属性，那么他在ListView中有什么作用呢？</p>
+<p>我们知道ListView在加载列表时候它需要的东西无非就是：列表长度、每一项的列表View，当前项的位置；有了这3个东西我们就能产生一个ListView列表，这个可以从适配器中获得，其中长度其实就是你得到数据的长度，而当前项的位置则由当前加载位置决定的，因此ListView的加载时间和内存消耗主要是在：View的产生上面，而View的优化我们可以从2个方面进行：</p>
+<p>a.View的创建时间的优化，因此尽量的重复利用已经创建好的View</p>
+<p>b.查找View上面控件的优化，一次尽可能的减少findViewById()的使用</p>
+<p>前者我们可以通过convertView==null的判断来减少重复创建View的时间，后者则可以使用静态ViewHolder来减少findViewById()的使用。</p>
+<p>（2）实例比较研究</p>
+<p>我们来动手创建一个来试试：</p>
+<p>首先我们来自定义一个Adapter,用来作为ListView的适配器：</p>
+<p><pre class="lang:java decode:true ">public class ListViewAdapterBas extends BaseAdapter{<br>    private Context context;<br>    private List&lt;Map&lt;String,Object&gt;&gt; data;<br>    /** </pre></p>
+<pre><code> * @param context  上下文
+ * @param data  你要加载到ListView上面的数据
+ */
+public ListViewAdapterBas(Context context){
+     List&amp;lt;Map&amp;lt;String,Object&amp;gt;&amp;gt; itemList=new ArrayList&amp;lt;Map&amp;lt;String,Object&amp;gt;&amp;gt;();
+        Map&amp;lt;String,Object&amp;gt; mMap=null;
+        for(int i=0;i&amp;lt;10000;i++){
+            mMap=new HashMap&amp;lt;String,Object&amp;gt;();
+            mMap.put(&quot;image&quot;, R.drawable.two);
+            mMap.put(&quot;title&quot;, &quot;美女：aspen&quot;);
+            itemList.add(mMap);
+        }
+    this.context=context;
+    this.data=itemList;
+}
+
+static class ViewHolder{
+    //此处就是你定义的中包含的 控件 Item
+    ImageView image;
+    TextView text;
+}
+
+@Override
+public int getCount() {
+    //这里就是返回ListView的总长度
+    return data.size();
+}
+
+@Override
+public Object getItem(int arg0) {
+    // TODO Auto-generated method stub
+    return arg0;//得到当前加载的项
+}
+
+@Override
+public long getItemId(int arg0) {
+    // TODO Auto-generated method stub
+    return arg0;
+}
+
+@Override
+public View getView(int position, View convertView, ViewGroup parent) {
+    long startTime = System.nanoTime();
+    ViewHolder holder;
+    LayoutInflater mInflater=LayoutInflater.from(context);
+    //判断是否已经加载过视图了，如果加载过的话就直接使用，如果没有加载的话就重新加载
+    if(convertView==null){
+        convertView = mInflater.inflate(R.layout.listview_item, null);
+        holder = new ViewHolder();
+        holder.image=(ImageView)convertView.findViewById(R.id.image);
+        holder.text=(TextView)convertView.findViewById(R.id.title);
+    }else{
+        holder = (ViewHolder)convertView.getTag();
+    }
+
+    holder.image.setImageResource(Integer.parseInt(data.get(position).get(&quot;image&quot;).toString()));
+    holder.text.setText(data.get(position).get(&quot;title&quot;).toString());
+    // 停止计时
+    long endTime = System.nanoTime();
+    // 计算耗时
+    long val = (endTime - startTime) / 1000L;
+    //Log.e(&quot;Test&quot;, &quot;Position:&quot; + position + &quot;:&quot; + val);
+    return convertView;
+}
+</code></pre><p>}<br><br>代码分析：viewHolder</p>
+<p><pre class="lang:java decode:true ">static class ViewHolder{<br>        //此处就是你定义的中包含的 控件 Item<br>        ImageView image;<br>        TextView text;<br>    }</pre><br>定义了一个ViewHolder,这里面就是我们列表Item的对应控件，一个图片和一个标题，注意是静态的，静态的好处就是节省了实例化所花费的时间，调用速度回更快，不过占用的内存可能会更多。</p>
+<p>getView代码</p>
+<p><pre class="lang:java decode:true ">if(convertView==null){<br>            convertView = mInflater.inflate(R.layout.listview_item, null);<br>            holder = new ViewHolder();<br>            holder.image=(ImageView)convertView.findViewById(R.id.image);<br>            holder.text=(TextView)convertView.findViewById(R.id.title);<br>        }else{<br>            holder = (ViewHolder)convertView.getTag();<br>        }</pre><br>判断当前的视图是否已经创建，如果创建了就直接加载，就直接使用getTag()来获取视图，另外使用holder避免了重复加载。</p>
+<p>最后直接在Activity中引用：</p>
+<p><pre class="lang:java decode:true ">public class MainActivity extends Activity {</pre></p>
+<pre><code>@Override
+protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
+    ListView lv=(ListView)findViewById(R.id.listView1);
+    long startTime = System.nanoTime();
+    ListViewAdapterBas listViewAd=new ListViewAdapterBas(this);
+    lv.setAdapter(listViewAd) ; 
+    //ListViewAdapter.setListViewAdpter(this, lv);
+    // 停止计时
+    long endTime = System.nanoTime();
+    // 计算耗时
+    long val = (endTime - startTime) / 1000L;
+    Log.e(&quot;总耗时：&quot;, &quot;Position:&quot; + val);
+
+}
+
+@Override
+public boolean onCreateOptionsMenu(Menu menu) {
+    // Inflate the menu; this adds items to the action bar if it is present.
+    getMenuInflater().inflate(R.menu.main, menu);
+    return true;
+}
+</code></pre><p>}<br>我们来看看和前一篇文章对比消耗时间：</p>
+<p><img src="http://img.blog.csdn.net/20140804224830890?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSVRiYWlsZWk=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt=""></p>
+<p>从图上可以看出，消耗的时间大概就是viewCach的40%左右的时间，这样大大优化了ListView.</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/04/04/安卓ListView优化（1）/" rel="next" title="安卓ListView优化（1）">
+                <i class="fa fa-chevron-left"></i> 安卓ListView优化（1）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/04/07/观察者模式/" rel="prev" title="观察者模式">
+                观察者模式 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="uyan_frame"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="zhiwu_yan" />
+          <p class="site-author-name" itemprop="name">zhiwu_yan</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-什么是ViewHolder"><span class="nav-number">1.</span> <span class="nav-text">(1)什么是ViewHolder?</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhiwu_yan</span>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    
+
+    
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2133838"></script>
+      <!-- UY END -->
+    
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

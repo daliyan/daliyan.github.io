@@ -1,0 +1,810 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="android," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.png?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="1. 何为SVG？1.1 SVG基本特点SVG（全称：可缩放矢量图形 Scalable Vector Graphics），是用于描述矢量图形的一种图形格式。SVG是W3C制定的，是一个W3C开放标准（该标准是2001年由太阳微系统、Adobe、苹果公司、IBM 以及柯达联合制定的）。它主要有有以下几种特征：  SVG 用来定义用于网络的基于矢量的图形 SVG 使用 XML 格式定义图形 SVG 图">
+<meta name="keywords" content="android">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android SVG初探">
+<meta property="og:url" content="http://yoursite.com/2015/10/19/android-svg/index.html">
+<meta property="og:site_name" content="秋山">
+<meta property="og:description" content="1. 何为SVG？1.1 SVG基本特点SVG（全称：可缩放矢量图形 Scalable Vector Graphics），是用于描述矢量图形的一种图形格式。SVG是W3C制定的，是一个W3C开放标准（该标准是2001年由太阳微系统、Adobe、苹果公司、IBM 以及柯达联合制定的）。它主要有有以下几种特征：  SVG 用来定义用于网络的基于矢量的图形 SVG 使用 XML 格式定义图形 SVG 图">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://www.jcodecraeer.com/uploads/20151009/1444371714145232.gif">
+<meta property="og:image" content="http://www.akiyamayzw.com/wp-content/uploads/2015/10/studio_vector_studio.png-300x242.png">
+<meta property="og:image" content="http://www.akiyamayzw.com/wp-content/uploads/2015/10/2015-10-19-150314的屏幕截图-300x211.png">
+<meta property="og:image" content="http://www.akiyamayzw.com/wp-content/uploads/2015/10/2015-10-19-154238的屏幕截图-300x250.png">
+<meta property="og:updated_time" content="2017-12-25T15:51:29.293Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android SVG初探">
+<meta name="twitter:description" content="1. 何为SVG？1.1 SVG基本特点SVG（全称：可缩放矢量图形 Scalable Vector Graphics），是用于描述矢量图形的一种图形格式。SVG是W3C制定的，是一个W3C开放标准（该标准是2001年由太阳微系统、Adobe、苹果公司、IBM 以及柯达联合制定的）。它主要有有以下几种特征：  SVG 用来定义用于网络的基于矢量的图形 SVG 使用 XML 格式定义图形 SVG 图">
+<meta name="twitter:image" content="http://www.jcodecraeer.com/uploads/20151009/1444371714145232.gif">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2015/10/19/android-svg/"/>
+
+
+
+
+
+  <title>Android SVG初探 | 秋山</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=62198010";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">秋山</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">要么读书要么旅行，身体和灵魂必须有一个在路上</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/10/19/android-svg/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhiwu_yan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="秋山">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android SVG初探</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-10-19T16:10:21+08:00">
+                2015-10-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h5 id="1-何为SVG？"><a href="#1-何为SVG？" class="headerlink" title="1. 何为SVG？"></a>1. 何为SVG？</h5><h5 id="1-1-SVG基本特点"><a href="#1-1-SVG基本特点" class="headerlink" title="1.1 SVG基本特点"></a>1.1 SVG基本特点</h5><p>SVG（全称：可缩放矢量图形 Scalable Vector Graphics），是用于描述矢量图形的一种图形格式。SVG是W3C制定的，是一个W3C开放标准（该标准是2001年由太阳微系统、Adobe、苹果公司、IBM 以及柯达联合制定的）。<br>它主要有有以下几种特征：</p>
+<ul>
+<li>SVG 用来定义用于网络的基于矢量的图形</li>
+<li>SVG 使用 XML 格式定义图形</li>
+<li>SVG 图像在放大或改变尺寸的情况下其图形质量不会有所损失</li>
+<li>SVG 是万维网联盟的标准</li>
+<li>SVG 与诸如 DOM 和 XSL 之类的 W3C 标准是一个整体</li>
+</ul>
+<p>与其他图像格式相比，使用 SVG 的优势在于：</p>
+<ul>
+<li>SVG 可被非常多的工具读取和修改（比如记事本）</li>
+<li>SVG 与 JPEG 和 GIF 图像比起来，尺寸更小，且可压缩性更强。</li>
+<li>SVG 是可伸缩的</li>
+<li>SVG 图像可在任何的分辨率下被高质量地打印</li>
+<li>SVG 可在图像质量不下降的情况下被放大</li>
+<li>SVG 图像中的文本是可选的，同时也是可搜索的（很适合制作地图）</li>
+<li>SVG 可以与 Java 技术一起运行</li>
+<li>SVG 是开放的标准</li>
+<li>SVG 文件是纯粹的 XML</li>
+</ul>
+<blockquote>
+<p>现在几乎所有的浏览器都支持SVG浏览，除了少部分低版本的IE需要安装Adobe SVG Viewer。<br>  矢量显示对象，基本矢量显示对象包括矩形、圆、椭圆、多边形、直线、任意曲线等嵌入式外部图像，包括PNG、JPEG、SVG、文字对象等</p>
+</blockquote>
+<h5 id="1-2-SVG基本语法规则"><a href="#1-2-SVG基本语法规则" class="headerlink" title="1.2 SVG基本语法规则"></a>1.2 SVG基本语法规则</h5><p>关于SVG的基本语法规则和教程可以查看：<a href="http://www.w3school.com.cn/svg/" target="_blank" rel="noopener">SVG教程</a></p>
+<h5 id="2-Android中为什么要使用SVG？"><a href="#2-Android中为什么要使用SVG？" class="headerlink" title="2. Android中为什么要使用SVG？"></a>2. Android中为什么要使用SVG？</h5><p>前面我们提到SVG的一些特性，这些特性能够很好的在Android中进行使用：</p>
+<ul>
+<li>图片的完美适配。SVG 图像在放大或改变尺寸的情况下其图形质量不会有所损失。这样我们大大减少了适配所需要的多种分辨率图片，而且能够让图片完美适配多种分辨率，减少了APK包大小并提升了用户体验。</li>
+<li>尺寸的减小。SVG 是使用XML文件描述的，这种文本格式的图片尺寸很小，而且便于修改。</li>
+<li>设计上的轻便。在设计方面我们可以任意修改SVG图片的颜色，这对于某些情况下需要同一张图像但不同的颜色图片是非常方便的，只需要修改fill颜色就可以了。比如，单击下图片的不同状态、按钮的背景图片等等。<br>例如下面的SVG，可以很方便的修改大小、颜色：</li>
+</ul>
+<pre>
+`
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewbox="0 0 24 24">
+    <path d="M22 5.7l-4.6-3.9-1.3 1.5 4.6 3.9L22 5.7zM7.9 3.4L6.6 1.9 2 5.7l1.3 1.5 4.6-3.8zM12.5 8H11v6l4.7 2.9.8-1.2-4-2.4V8zM12 4c-5 0-9 4-9 9s4 9 9 9 9-4 9-9-4-9-9-9zm0 16c-3.9 0-7-3.1-7-7s3.1-7 7-7 7 3.1 7 7-3.1 7-7 7z" fill="#E91E63"/>
+</svg>
+`
+</pre>
+
+<ul>
+<li><p>复杂动画的制作。在某些复杂动画，特别是一些不规则的图片动画的制作，如果使用普通的PNG图片实现是特别困难的。比如这种动画</p>
+<p><img src="http://www.jcodecraeer.com/uploads/20151009/1444371714145232.gif" alt="enter image description here"><br>比如金币图片的的一些路径闪光，而使用SVG相对就比较简单了，因为本身这些图片就是使用<a href="http://www.w3school.com.cn/svg/svg_path.asp" target="_blank" rel="noopener">PATH路径</a>来描述的，我们在代码中直接使用SVG文件在中的PATH路径      值就可构建出复杂的动画功能。</p><p></p>
+</li>
+</ul>
+<p></p><p>在最新的<a href="http://developer.android.com/intl/zh-cn/sdk/index.html" target="_blank" rel="noopener">android studio版本1.4</a>中是直接<a href="http://android-developers.blogspot.com/2015/09/android-studio-14.html" target="_blank" rel="noopener">支持编辑</a>SVG图片的</p>
+<p><a href="http://www.akiyamayzw.com/wp-content/uploads/2015/10/studio_vector_studio.png.png" target="_blank" rel="noopener"><img src="http://www.akiyamayzw.com/wp-content/uploads/2015/10/studio_vector_studio.png-300x242.png" alt="studio_vector_studio.png"></a><br>这样我们将更加方便的使用SVG图片。</p>
+<h5 id="3-怎么获取SVG图片"><a href="#3-怎么获取SVG图片" class="headerlink" title="3.怎么获取SVG图片"></a>3.怎么获取SVG图片</h5><p>我们可以使用专业的设计工具设计SVG图片，例如VS、AI、CorelDRAW，也可以使用Android Studio1.4自带的SVG编辑器工具。<br>在个人的项目中，特别是对于没有设计功底的程序员来说，设计一个精美的APP是很困难的，我们需要遵循<a href="https://www.google.com/design/spec/material-design/introduction.html" target="_blank" rel="noopener">android设计原则</a>来设计一个APP。所幸的是google发布了大量开源的ICON图片来满足我们的基本设计需求,该项目的<a href="https://github.com/google/material-design-icons" target="_blank" rel="noopener">github地址</a><br>在文件夹下面我们能找到对应PNG图片的SVG格式</p>
+<p><a href="http://www.akiyamayzw.com/wp-content/uploads/2015/10/2015-10-19-150314的屏幕截图.png" target="_blank" rel="noopener"><img src="http://www.akiyamayzw.com/wp-content/uploads/2015/10/2015-10-19-150314的屏幕截图-300x211.png" alt="2015-10-19 15:03:14的屏幕截图"></a><br>这些图片能够很好的应用到我们的个人项目下面。</p>
+<h5 id="4-android中使用SVG"><a href="#4-android中使用SVG" class="headerlink" title="4. android中使用SVG"></a>4. android中使用SVG</h5><p>可惜的是Android官方目前（根据多方消息，估计不久会适配）对SVG格式的支持只是在Android 5.0 (LOLLIPOP) 以上,如果低版本需要使用SVG格式的图片，你需要使用第三方兼容包，目前比较流行的兼容库主要有以下几个：</p>
+<ul>
+<li><a href="https://github.com/japgolly/svg-android" target="_blank" rel="noopener">SVG-Android</a></li>
+<li><a href="https://github.com/wnafee/vector-compat" target="_blank" rel="noopener">Vector-Compat</a></li>
+<li><a href="https://github.com/telly/MrVector" target="_blank" rel="noopener">MrVector</a></li>
+</ul>
+<p>经过测试Vector-Compat和MrVector存在一些BUG，这些BUG直接导致了对很多SVG文件解析错误，特别是对一些浮点型的PATH路径解析存在这许多错误，而且在使用Vector的时候需要复制一些属性，冗余性很高，使用起来不是很方便。所以最终使用SVG-Android，但是它也存在一些缺陷：</p>
+<ul>
+<li>该项目已经停止开发维护，后续不做升级，对动画支持很弱，以后也不会支持。</li>
+<li>在为ImageView设置SVG图片的时候，必须将ImageView的硬件加速关闭，否则图片不能显示。</li>
+<li>使用SAX方式对SVG格式进行解析，相比较与PNG图片占用CPU可能更高，但是内存占用更低.</li>
+</ul>
+<p>所以在使用这些库的时候需要做一个取舍和比较，期待官方库的支持（据说官方V7包23已经支持，但是我目前还未找到<a href="https://android.googlesource.com/platform/frameworks/support/+/master/v7/vectordrawable/" target="_blank" rel="noopener">vectordrawable</a><br>如果谁看到了请告知，谢谢。）</p>
+<p>基本使用方法。<br>在项目的对应module下引用:</p>
+<pre><code>compile &apos;com.github.japgolly.android:svg-android:2.0.6&apos;
+</code></pre><p>在目录下新建res/raw文件夹或者assets文件夹，选一个即可，将svg图片拷贝到对应文件夹下面，例如：<br><a href="http://www.akiyamayzw.com/wp-content/uploads/2015/10/2015-10-19-154238的屏幕截图.png" target="_blank" rel="noopener"><img src="http://www.akiyamayzw.com/wp-content/uploads/2015/10/2015-10-19-154238的屏幕截图-300x250.png" alt="2015-10-19 15:42:38的屏幕截图"></a></p>
+<p>在布局文件中使用控件,例如ImageView:</p>
+<pre>
+`
+
+<?xml version="1.0" encoding="utf-8"?>
+<linearlayout xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="horizontal" android:layout_width="match_parent" android:gravity="center" android:clickable="true" android:layout_height="50dip">
+
+    <imageview android:id="@+id/title_iv" android:layout_width="24dip" android:layout_height="24dip" android:layout_margin="10dip">
+
+    <textview android:id="@+id/title_tv" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1" android:textcolor="@color/black" android:text="提醒" android:textsize="16sp">
+
+</textview></imageview></linearlayout>
+
+</pre>
+
+<p>`<br>在Activity中直接使用：</p>
+<pre>
+`
+ImageView imageView = (ImageView) findViewById(R.id.title_tv);
+SVG svg = new SVGBuilder().readFromResource(AppContext.getInstance().getResources(), R.raw.ic_access_alarms_24px).build();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            imageView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        }
+imageView.setImageDrawable(svg.getDrawable());
+</pre>
+
+<p>`<br>这样就可以直接读出图片，图片的颜色可以到对应的文件下面任意修改。具体可见我的项目<a href="https://github.com/daliyan/MyKeep" target="_blank" rel="noopener">MyKeep</a></p>
+<h5 id="5-总结"><a href="#5-总结" class="headerlink" title="5.总结"></a>5.总结</h5><p>SVG图片使用是Android的一大趋势，在Android Studio1.4支持对SVG图片的编辑让开发者能够更加方便的使用SVG来设计,因此掌握SVG的使用是非常有用的。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/android/" rel="tag"># android</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/10/09/管理应用的内存/" rel="next" title="管理应用的内存">
+                <i class="fa fa-chevron-left"></i> 管理应用的内存
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/02/23/爬虫获取知乎话题/" rel="prev" title="爬虫获取知乎话题">
+                爬虫获取知乎话题 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="uyan_frame"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="zhiwu_yan" />
+          <p class="site-author-name" itemprop="name">zhiwu_yan</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-何为SVG？"><span class="nav-number">1.</span> <span class="nav-text">1. 何为SVG？</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-1-SVG基本特点"><span class="nav-number">2.</span> <span class="nav-text">1.1 SVG基本特点</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-2-SVG基本语法规则"><span class="nav-number">3.</span> <span class="nav-text">1.2 SVG基本语法规则</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-Android中为什么要使用SVG？"><span class="nav-number">4.</span> <span class="nav-text">2. Android中为什么要使用SVG？</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-怎么获取SVG图片"><span class="nav-number">5.</span> <span class="nav-text">3.怎么获取SVG图片</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-android中使用SVG"><span class="nav-number">6.</span> <span class="nav-text">4. android中使用SVG</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-总结"><span class="nav-number">7.</span> <span class="nav-text">5.总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhiwu_yan</span>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    
+
+    
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2133838"></script>
+      <!-- UY END -->
+    
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

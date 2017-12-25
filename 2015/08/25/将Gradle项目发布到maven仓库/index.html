@@ -1,0 +1,1015 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.png?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="1.Ant和Maven介绍 全称为Apache Maven，是一个软件（特别是Java软件）项目管理及自动构建工具，由Apache软件基金会所提供。  &amp;emsp;在发布maven之前，android普遍使用ant的方式进行项目的构建和管理，它们均使用XML文件来配置描述项目的，相比较于ant maven提供的功能更加强大。主要表现在以下几点：  使用POM的方式来管理和描述项目 内置了更多的隐式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="将Gradle项目发布到maven仓库">
+<meta property="og:url" content="http://yoursite.com/2015/08/25/将Gradle项目发布到maven仓库/index.html">
+<meta property="og:site_name" content="秋山">
+<meta property="og:description" content="1.Ant和Maven介绍 全称为Apache Maven，是一个软件（特别是Java软件）项目管理及自动构建工具，由Apache软件基金会所提供。  &amp;emsp;在发布maven之前，android普遍使用ant的方式进行项目的构建和管理，它们均使用XML文件来配置描述项目的，相比较于ant maven提供的功能更加强大。主要表现在以下几点：  使用POM的方式来管理和描述项目 内置了更多的隐式">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-12-25T15:51:29.296Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="将Gradle项目发布到maven仓库">
+<meta name="twitter:description" content="1.Ant和Maven介绍 全称为Apache Maven，是一个软件（特别是Java软件）项目管理及自动构建工具，由Apache软件基金会所提供。  &amp;emsp;在发布maven之前，android普遍使用ant的方式进行项目的构建和管理，它们均使用XML文件来配置描述项目的，相比较于ant maven提供的功能更加强大。主要表现在以下几点：  使用POM的方式来管理和描述项目 内置了更多的隐式">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2015/08/25/将Gradle项目发布到maven仓库/"/>
+
+
+
+
+
+  <title>将Gradle项目发布到maven仓库 | 秋山</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=62198010";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">秋山</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">要么读书要么旅行，身体和灵魂必须有一个在路上</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/08/25/将Gradle项目发布到maven仓库/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhiwu_yan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="秋山">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">将Gradle项目发布到maven仓库</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-08-25T09:52:36+08:00">
+                2015-08-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h4 id="1-Ant和Maven介绍"><a href="#1-Ant和Maven介绍" class="headerlink" title="1.Ant和Maven介绍"></a>1.Ant和Maven介绍</h4><blockquote>
+<p>全称为Apache Maven，是一个软件（特别是Java软件）项目管理及自动构建工具，由Apache软件基金会所提供。</p>
+</blockquote>
+<p>&emsp;在发布maven之前，android普遍使用ant的方式进行项目的构建和管理，它们均使用XML文件来配置描述项目的，相比较于ant maven提供的功能更加强大。主要表现在以下几点：</p>
+<ul>
+<li>使用POM的方式来管理和描述项目</li>
+<li>内置了更多的隐式规则，使得构建文件更简单</li>
+<li><strong>内置了依赖管理来和Repository来实现依赖管理</strong></li>
+<li>内置了软件构建的生命周期<br>&emsp;然而在一些中大型项目中使用Maven方式构建软件会让XML配置文件越来越大，越来越笨重，而且灵活性不够，因此，出现了gradle.</li>
+</ul>
+<h4 id="2-Gradle"><a href="#2-Gradle" class="headerlink" title="2.Gradle"></a>2.Gradle</h4><blockquote>
+<p>Gradle是一个基于Apache Ant和Apache Maven概念的项目自动化建构工具。它使用一种基于Groovy的特定领域语言来声明项目设置。</p>
+</blockquote>
+<p>&emsp;很明显，Gradle的出现是为了弥补ant和maven构建方式的不足，它不是采用传统的xml文件构建方式，而是采用groovy方式来构建。具体映射到android中就是使用gradle脚本文件的构建方式。它贯穿了项目的整个生命周期，包括编译、检查、测试、打包、部署。<br>&emsp;因此，google将gradle方式作为了android项目管理的默认方式，使用android studio创建的项目下面会默认生成build.gradle文件作为默认构建。<br>更多的android Gradle介绍请看：</p>
+<ul>
+<li><a href="https://gradle.org/getting-started-android/" target="_blank" rel="noopener">gradle-android</a></li>
+<li><a href="https://zh.wikipedia.org/zh/Gradle" target="_blank" rel="noopener">wikipedia-gradle介绍</a></li>
+<li><a href="http://m.blog.csdn.net/blog/proud2005/43407265" target="_blank" rel="noopener">ant\maven\gradle比较</a></li>
+</ul>
+<h4 id="1-2-常见的Maven仓库和Gradle依赖的使用"><a href="#1-2-常见的Maven仓库和Gradle依赖的使用" class="headerlink" title="1.2.常见的Maven仓库和Gradle依赖的使用"></a>1.2.常见的Maven仓库和Gradle依赖的使用</h4><p>&emsp;在使用ant构建项目的时候我们要使用第三方库往往要下载对应的库并将其jar文件拷贝到项目文件夹下面，这样会显得很麻烦。在使用gradle构建方式以后我们只要需要一个坐标就能够引入项目库文件，例如：</p>
+<pre><code>dependencies {
+    compile fileTree(dir: &apos;libs&apos;, include: [&apos;*.jar&apos;])
+    compile &apos;com.android.support:appcompat-v7:22.1.1&apos;
+}
+`&lt;/pre&gt;
+
+&amp;emsp;这个就是gradle依赖使用方式。所谓的gradle依赖就是我们提供一个坐标然后它会自动帮我们从网络上下载对应的文件，甚至我们可以在本地看到库文件的源码。
+那我们到底是从哪里下载到对应的文件呢？我们通过跟踪项目文件顶级目录下面的buidle gradle文件：
+
+&lt;pre&gt;`allprojects {
+    repositories {
+        jcenter()
+    }
+}
+`&lt;/pre&gt;
+
+jcenter函数：
+
+&lt;pre&gt;`/**
+     * Adds a repository which looks in Bintray&apos;s JCenter repository for dependencies.
+     * &amp;lt;p&amp;gt;
+     * The URL used to access this repository is {@literal &quot;https://jcenter.bintray.com/&quot;}.
+     * The behavior of this repository is otherwise the same as those added by {@link #maven(org.gradle.api.Action)}.
+     * &amp;lt;p&amp;gt;
+     * Examples:
+     * &amp;lt;pre autoTested=&quot;&quot;&amp;gt;
+     * repositories {
+     *     jcenter()
+     * }
+     * &amp;lt;/pre&amp;gt;
+     *
+     * @return the added resolver
+     * @see #jcenter(Action)
+     */
+    MavenArtifactRepository jcenter();
+`&lt;/pre&gt;
+
+&amp;emsp;我们知道我们的包是从一个叫做Bintray&apos;s JCenter repository中下载而来的，我们打开[jcenter库](https://jcenter.bintray.com)试试，
+[![2015-08-24 14:27:55的屏幕截图](http://www.akiyamayzw.com/wp-content/uploads/2015/08/2015-08-24-142755的屏幕截图-289x300.png)](http://www.akiyamayzw.com/wp-content/uploads/2015/08/2015-08-24-142755的屏幕截图.png)
+
+&amp;emsp;看到了我们常见的一些库，这样我终于搞清楚gradle依赖是从哪里来的了。
+&amp;emsp;事实上，这个Jcenter库是一家叫做bintray的机构维护，它作为google android官方默认的中央库.但在android studio的早期版本中默认使用的是[maven库](http://mvnrepository.com/)，它是由sonatype机构维护的。目前主要存在的三个依赖库为：
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+  &lt;th align=&quot;left&quot;&gt;库名&lt;/th&gt;
+  &lt;th align=&quot;left&quot;&gt;维护机构&lt;/th&gt;
+  &lt;th align=&quot;left&quot;&gt;android studio调用&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+  &lt;td align=&quot;left&quot;&gt;jcenter&lt;/td&gt;
+  &lt;td align=&quot;left&quot;&gt;bintray&lt;/td&gt;
+  &lt;td align=&quot;left&quot;&gt;jcenter()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;td align=&quot;left&quot;&gt;maven&lt;/td&gt;
+  &lt;td align=&quot;left&quot;&gt;sonatype&lt;/td&gt;
+  &lt;td align=&quot;left&quot;&gt;mavenCentral()&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+  &lt;td align=&quot;left&quot;&gt;lvy&lt;/td&gt;
+  &lt;td align=&quot;left&quot;&gt;sonatype&lt;/td&gt;
+  &lt;td align=&quot;left&quot;&gt;//一般在ant中使用&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+三者都是基于Apache Maven的规则来进行依赖。
+
+#### 1.3\. aar库文件
+
+&amp;emsp;aar文件其实和jar文件作用是一样的，唯一的区别在于aar是专门针对android项目优化过的jar文件，里面除了jar以外还包括了res\string等资源文件。
+
+### 2\. 将项目发布到Jcenter Maven仓库中
+
+#### 2.1\. 发布Jcenter步骤
+
+##### 2.1.1 注册bintray帐号
+
+&amp;emsp;为了让自己的项目也能够被全世界的开发者使用，我们可以通过将lib项目发布到jcenter库中，在配置脚本之前我们需要先去官网注册一个帐号，传送门：[bintray](https://bintray.com/) 也可以使用第三方登录的方式来登录，包括github、google、facebook帐号等。注册成功后我们先要获取到一个api key。
+![](http://img.blog.csdn.net/20150126092533531?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbWFvc2lkaWFveGlhbg==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center)
+
+##### 2.1.2.上传文件
+
+&amp;emsp;在Jcenter库中要求上传到库中的项目必须包含4个文件：
+- javadoc.jar
+- sources.jar
+- aar或者jar
+- pom
+&amp;emsp;如果少了审核可能不会通过，当然这几个文件都可一通过配置gradle脚本来自动生成。
+
+#### 2.2.配置Gradle脚本
+
+&amp;emsp;为了创建上面所说的几个文件，我们需要构建脚本来自动生成对应的文件。具体可以参考：[github-SwipeView-build.gradle](https://github.com/daliyan/SwipeView/blob/master/library/build.gradle)
+
+##### 2.2.1\. 配置项目依赖
+
+将项目文件根目录（Top-level）下面的buide.gradle文件增加依赖：
+
+&lt;pre&gt;` dependencies {
+        classpath &apos;com.android.tools.build:gradle:1.0.0&apos;
+        classpath &apos;com.github.dcendents:android-maven-plugin:1.2&apos;
+        classpath &apos;com.jfrog.bintray.gradle:gradle-bintray-plugin:1.0&apos;
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+`&lt;/pre&gt;
+
+&gt; 注意： classpath &apos;com.android.tools.build:gradle:1.0.0&apos; 在默认生成的文件下可能版本不一致，采用默认的有时候会导致构建失败，最好也修改成1.0.0版本的。
+
+##### 2.2.2.增加gradle插件和版本号
+
+&amp;emsp;在需要上传的library项目的build.gradle下增加插件引用和版本号：
+
+&lt;pre&gt;`apply plugin: &apos;com.android.library&apos;
+apply plugin: &apos;com.github.dcendents.android-maven&apos;
+apply plugin: &apos;com.jfrog.bintray&apos;
+version = &quot;1.0&quot;
+`&lt;/pre&gt;
+
+&gt; 注意：版本号作为项目坐标的一部分，以后在升级项目的时候都需要升级版本号，否则会覆盖掉已经上传的版本.
+</code></pre><blockquote>
+<pre><code>&amp;emsp;关于插件bintray的更详细的使用方式可以查看：[github-bintray](https://github.com/bintray/gradle-bintray-plugin)
+</code></pre></blockquote>
+<pre><code>##### 2.2.3.pom节点生成
+
+&amp;emsp;生成POM文件build脚本
+
+&lt;pre&gt;`def siteUrl = &apos;https://github.com/daliyan/SwipeView&apos;      // 项目的主页
+def gitUrl = &apos;https://github.com/daliyan/SwipeView.git&apos;   // Git仓库的url
+group = &quot;akiyama.swipe&quot;
+// 根节点添加
+install {
+    repositories.mavenInstaller {
+        // This generates POM.xml with proper parameters
+        pom {
+            project {
+                packaging &apos;aar&apos;
+                name &apos;swipeView For Android&apos;
+                url siteUrl
+                licenses {
+                    license {
+                        name &apos;The Apache Software License, Version 2.0&apos;
+                        url &apos;http://www.apache.org/licenses/LICENSE-2.0.txt&apos;
+                    }
+                }
+                developers {
+                    developer {
+                        id &apos;akiyama&apos;
+                        name &apos;daliyan&apos;
+                        email &apos;dali_yan@yeah.net&apos;
+                    }
+                }
+                scm {
+                    connection gitUrl
+                    developerConnection gitUrl
+                    url siteUrl
+                }
+            }
+        }
+    }
+}
+`&lt;/pre&gt;
+
+&gt; 注意：group = &quot;akiyama.swipe&quot;作为项目坐标的前缀，packaging &apos;aar&apos; 为arr包，其它的自己随意填写。
+
+##### 2.2.4\. javadoc和sources文件的生成
+
+&amp;emsp;添加生成任务：
+
+&lt;pre&gt;`task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = &apos;sources&apos;
+}
+
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = &apos;javadoc&apos;
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+`&lt;/pre&gt;
+
+&gt; 注意：在构建生成的时候有可能会报GBK编码等错误，可能需要添加UTF-8声明，如下：
+
+&lt;pre&gt;`//添加UTF-8编码否则注释可能JAVADOC文档可能生成不了
+javadoc {
+    options{
+        encoding &quot;UTF-8&quot;
+        charSet &apos;UTF-8&apos;
+        author true
+        version true
+        links &quot;http://docs.oracle.com/javase/7/docs/api&quot;
+        title &quot;swipeJavaDoc&quot;
+    }
+}
+`&lt;/pre&gt;
+
+##### 2.2.5\. 构建上传jecnter库中脚本
+
+&amp;emsp;使用前面的我们注册帐号和apikey上传对应的文件到jcenter库中：
+
+&lt;pre&gt;`Properties properties = new Properties()
+properties.load(project.rootProject.file(&apos;local.properties&apos;).newDataInputStream())
+bintray {
+    user = properties.getProperty(&quot;bintray.user&quot;)
+    key = properties.getProperty(&quot;bintray.apikey&quot;)
+    configurations = [&apos;archives&apos;]
+    pkg {
+        repo = &quot;maven&quot;
+        name = &quot;swipeView&quot;                // project name in jcenter
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        licenses = [&quot;Apache-2.0&quot;]
+        publish = true
+    }
+}
+`&lt;/pre&gt;
+
+&amp;emsp;因为用户名和apikey是属于个人的隐私信息，故在local.properties（该文件不会上传到git库中）本地文件中配置用户名和apikey
+
+&lt;pre&gt;`sdk.dir=/home/android-sdk
+bintray.user=your username
+bintray.apikey=your apikey
+`&lt;/pre&gt;
+
+#### 2.3.上传和审核
+
+在配置好了上述build.gradle文件后我们打开gradle控制面板就能看到如图所示的构建任务：
+[![2015-08-24 15:37:45的屏幕截图](http://www.akiyamayzw.com/wp-content/uploads/2015/08/2015-08-24-153745的屏幕截图-300x197.png)](http://www.akiyamayzw.com/wp-content/uploads/2015/08/2015-08-24-153745的屏幕截图.png)
+
+[![2015-08-24 15:38:01的屏幕截图](http://www.akiyamayzw.com/wp-content/uploads/2015/08/2015-08-24-153801的屏幕截图-300x101.png)](http://www.akiyamayzw.com/wp-content/uploads/2015/08/2015-08-24-153801的屏幕截图.png)
+
+我们只需要双击bintrayUpload就能自动上传到jcenter库中了。
+到官网找到我们刚刚上传的文件，提交审核就行了（别跟我说你找不到），一般2-3个小时就能审核成功。
+成功后可以通过http://jcenter.bintray.com/ 查询到你的库文件，例如我的项目文件路径为：http://jcenter.bintray.com/akiyama/swipe/library/2.1
+
+#### 2.4.同步项目到mvnrepository
+
+在jcenter中提供了将项目同步到mvnrepository库中,这样就不需要操作上传到mvnrepository库的繁琐步骤。在bintray构建脚本最后加上：
+
+&lt;pre&gt;` //Optional configuration for Maven Central sync of the version
+            mavenCentralSync {
+                sync = true //Optional (true by default). Determines whether to sync the version to Maven Central.
+                user = &apos;userToken&apos; //OSS user token
+                password = &apos;paasword&apos; //OSS user password
+                close = &apos;1&apos; //Optional property. By default the staging repository is closed and artifacts are released to Maven Central. You can optionally turn this behaviour off (by puting 0 as value) and release the version manually.
+            } 
+`&lt;/pre&gt;
+
+&gt; 注意：user和password即为mvnrepository中注册的用户名和密码。如果同步成功你也可以通过http://mvnrepository.com/ 查询到你上传的lib项目
+
+#### 2.5.常见问题
+
+在构建脚本过程中可能会出现一些问题：
+- GBK编码问题，前文已经提供了解决方案；
+- 依赖库问题，可能会报告一些警告，只要保证最后构建成功，直接忽略即可；
+- gradle依赖问题：可以参照[githug-bintray](https://github.com/bintray/gradle-bintray-plugin) 解决方案：
+Gradle &gt;= 2.1
+
+&lt;pre&gt;`plugins {
+    id &quot;com.jfrog.bintray&quot; version &quot;1.3.1&quot;
+}
+`&lt;/pre&gt;
+
+Gradle &amp;lt; 2.1
+
+&lt;pre&gt;`buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath &apos;com.jfrog.bintray.gradle:gradle-bintray-plugin:1.3.1&apos;
+    }
+}
+apply plugin: &apos;com.jfrog.bintray&apos;
+</code></pre><h3 id="3-小结"><a href="#3-小结" class="headerlink" title="3. 小结"></a>3. 小结</h3><p>本文学习了gradle的一些基本知识和基本的构建，学习了如何将lib库上传到中央仓库中，以及在这个过程中可能遇到的问题。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/08/03/一些职场道理/" rel="next" title="一些职场道理">
+                <i class="fa fa-chevron-left"></i> 一些职场道理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/10/09/管理应用的内存/" rel="prev" title="管理应用的内存">
+                管理应用的内存 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="uyan_frame"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="zhiwu_yan" />
+          <p class="site-author-name" itemprop="name">zhiwu_yan</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-Ant和Maven介绍"><span class="nav-number">1.</span> <span class="nav-text">1.Ant和Maven介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-Gradle"><span class="nav-number">2.</span> <span class="nav-text">2.Gradle</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-常见的Maven仓库和Gradle依赖的使用"><span class="nav-number">3.</span> <span class="nav-text">1.2.常见的Maven仓库和Gradle依赖的使用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-小结"><span class="nav-number"></span> <span class="nav-text">3. 小结</span></a></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhiwu_yan</span>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    
+
+    
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2133838"></script>
+      <!-- UY END -->
+    
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

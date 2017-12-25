@@ -1,0 +1,901 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.png?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="标签（空格分隔）： 爬虫 1.分析昨天突然间好奇知乎上面到底有多少的话题数目，近期又在学习python，所以想通过python来爬一下知乎的话题数量。第一步当然试找到知乎的话题页面知乎话题广场可以看到里面的有话题分类，每个分类下面又有子话题。如果单单使用网页的解析的方式，只能解析当前页面数据。所以我们可以通过抓取其请求的形式来分析一下，我们使用火狐浏览器的fixbug来分析：上图可知，它是通过请求">
+<meta property="og:type" content="article">
+<meta property="og:title" content="爬虫获取知乎话题">
+<meta property="og:url" content="http://yoursite.com/2016/02/23/爬虫获取知乎话题/index.html">
+<meta property="og:site_name" content="秋山">
+<meta property="og:description" content="标签（空格分隔）： 爬虫 1.分析昨天突然间好奇知乎上面到底有多少的话题数目，近期又在学习python，所以想通过python来爬一下知乎的话题数量。第一步当然试找到知乎的话题页面知乎话题广场可以看到里面的有话题分类，每个分类下面又有子话题。如果单单使用网页的解析的方式，只能解析当前页面数据。所以我们可以通过抓取其请求的形式来分析一下，我们使用火狐浏览器的fixbug来分析：上图可知，它是通过请求">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://www.akiyamayzw.com/wp-content/uploads/2016/02/2016-02-23-141152屏幕截图-258x300.png">
+<meta property="og:image" content="http://www.akiyamayzw.com/wp-content/uploads/2016/02/2016-02-23-142038屏幕截图-300x88.png">
+<meta property="og:image" content="http://www.akiyamayzw.com/wp-content/uploads/2016/02/2016-02-23-150403屏幕截图-98x300.png">
+<meta property="og:updated_time" content="2017-12-25T15:51:29.297Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="爬虫获取知乎话题">
+<meta name="twitter:description" content="标签（空格分隔）： 爬虫 1.分析昨天突然间好奇知乎上面到底有多少的话题数目，近期又在学习python，所以想通过python来爬一下知乎的话题数量。第一步当然试找到知乎的话题页面知乎话题广场可以看到里面的有话题分类，每个分类下面又有子话题。如果单单使用网页的解析的方式，只能解析当前页面数据。所以我们可以通过抓取其请求的形式来分析一下，我们使用火狐浏览器的fixbug来分析：上图可知，它是通过请求">
+<meta name="twitter:image" content="http://www.akiyamayzw.com/wp-content/uploads/2016/02/2016-02-23-141152屏幕截图-258x300.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/02/23/爬虫获取知乎话题/"/>
+
+
+
+
+
+  <title>爬虫获取知乎话题 | 秋山</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=62198010";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">秋山</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">要么读书要么旅行，身体和灵魂必须有一个在路上</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/02/23/爬虫获取知乎话题/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhiwu_yan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="秋山">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">爬虫获取知乎话题</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-02-23T15:17:31+08:00">
+                2016-02-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>标签（空格分隔）： 爬虫</p>
+<h3 id="1-分析"><a href="#1-分析" class="headerlink" title="1.分析"></a><strong>1.分析</strong></h3><p>昨天突然间好奇知乎上面到底有多少的话题数目，近期又在学习python，所以想通过python来爬一下知乎的话题数量。<br>第一步当然试找到知乎的话题页面<a href="https://www.zhihu.com/topics" target="_blank" rel="noopener">知乎话题广场</a><br><a href="http://www.akiyamayzw.com/wp-content/uploads/2016/02/2016-02-23-141152屏幕截图.png" target="_blank" rel="noopener"><img src="http://www.akiyamayzw.com/wp-content/uploads/2016/02/2016-02-23-141152屏幕截图-258x300.png" alt="2016-02-23 14:11:52屏幕截图"></a><br>可以看到里面的有话题分类，每个分类下面又有子话题。如果单单使用网页的解析的方式，只能解析当前页面数据。<br>所以我们可以通过抓取其请求的形式来分析一下，我们使用火狐浏览器的fixbug来分析：<br><a href="http://www.akiyamayzw.com/wp-content/uploads/2016/02/2016-02-23-142038屏幕截图.png" target="_blank" rel="noopener"><img src="http://www.akiyamayzw.com/wp-content/uploads/2016/02/2016-02-23-142038屏幕截图-300x88.png" alt="2016-02-23 14:20:38屏幕截图"></a><br>上图可知，它是通过请求POST接口来取得知乎话题数据，接口信息：</p>
+<pre><code>_xsrf   65eb6285c92b03968844d921a259af38
+method  next
+params  {&quot;topic_id&quot;:833,&quot;offset&quot;:0,&quot;hash_id&quot;:&quot;6c47827e610fa47c8d6e368e88578fc6&quot;}
+`&lt;/pre&gt;
+
+接口地址https://www.zhihu.com/node/TopicsPlazzaListV2   其中topic_id指大分类下的id，offset是指偏移量，指每次执行next方法加载的子话题数量，hash_id可以为空我们暂时忽略它。当每次加载数据时候offset偏移20，每次切换父话题都需要改变id编号。
+嗯，大致上就是这样的。我们可以通过POSTMAN模拟一下请求。
+
+### **2\. 获取话题**
+
+通过分析页面元素可知
+
+[![2016-02-23 14:37:26屏幕截图](http://www.akiyamayzw.com/wp-content/uploads/2016/02/2016-02-23-143726屏幕截图-300x201.png)](http://www.akiyamayzw.com/wp-content/uploads/2016/02/2016-02-23-143726屏幕截图.png)
+
+&lt;pre&gt;`&amp;lt;li class=&quot;current&quot; data-id=&quot;99&quot;&amp;gt;
+&amp;lt;a href=&quot;#互联网&quot;&amp;gt;互联网&amp;lt;/a&amp;gt;
+&amp;lt;/li&amp;gt;
+`&lt;/pre&gt;
+
+每一个标签都含有一个data-id的东西，这个就代表话题的id,&lt;a&gt;xxx&lt;/a&gt;其中xxx表示话题的名称，可以使用正则表达式来获取话题名称。我们先新建一个Topic的类：
+
+&lt;pre&gt;`class Topic(object):
+    def __init__(self, id, name):
+        self.id = id
+        self.name = name
+`&lt;/pre&gt;
+
+使用urllib来获取html元素标签。
+
+&lt;pre&gt;`def getTopics():
+    zhihuTopics = []
+    url = &apos;https://www.zhihu.com/topics&apos;
+    cj = cookielib.CookieJar()
+    opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+    request = urllib2.Request(url)
+    response = opener.open(request)
+    pattern = re.compile(&apos;&amp;lt;li.*?data-id=&quot;(.*?)&quot;&amp;gt;&amp;lt;a.*?&amp;gt;(.*?)&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;&apos;,re.S)
+    results = re.findall(pattern,response.read().decode(&apos;utf-8&apos;))
+    for n1 in results:
+        print n1[0],n1[1]
+        topic = Topic(n1[0],n1[1])
+        zhihuTopics.append(topic)
+    return zhihuTopics
+`&lt;/pre&gt;
+
+其中正则表达式
+
+&lt;pre&gt;`&amp;lt;li.*?data-id=&quot;(.*?)&quot;&amp;gt;&amp;lt;a.*?&amp;gt;(.*?)&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
+`&lt;/pre&gt;
+
+主设置了2个变量获取，分别为话题id和话题名称。
+
+### **3.获取话题下面的子话题**
+
+可以通过模拟POST请求获取对应的子话题，我们需要话题子话题的名称和简介内容，我们首先新建一个对象类Content:
+
+&lt;pre&gt;`class Content(object):
+    def __init__(self, name, content):
+        self.name = name
+        self.content = content
+`&lt;/pre&gt;
+
+下面代码是模拟POST请求JSON数据的，通过解析JSON数据来获取值，并把获取到的值写道txt文件里面去
+
+&lt;pre&gt;`def getSubTopic(topic):
+    url = &apos;https://www.zhihu.com/node/TopicsPlazzaListV2&apos;
+    isGet = True;
+    offset = -20;
+    contents = []
+    while isGet:
+        offset = offset + 20
+        values = {&apos;method&apos;: &apos;next&apos;, &apos;params&apos;: &apos;{&quot;topic_id&quot;:&apos;+topic.id+&apos;,&quot;offset&quot;:&apos;+str(offset)+&apos;,&quot;hash_id&quot;:&quot;&quot;}&apos;}
+        try:
+            data = urllib.urlencode(values)
+            request = urllib2.Request(url,data,headers)
+            response = urllib2.urlopen(request)
+            json_str = json.loads(response.read().decode(&apos;utf-8&apos;))
+            # 将获取到的数组转换成字符串
+            topicMsg = &apos;.&apos;.join(json_str[&apos;msg&apos;])
+            pattern = re.compile(&apos;&amp;lt;strong&amp;gt;(.*?)&amp;lt;/strong&amp;gt;.*?&amp;lt;p&amp;gt;(.*?)&amp;lt;/p&amp;gt;&apos;,re.S)
+            results = re.findall(pattern,topicMsg)
+            if len(results) ==0:
+                isGet =False
+            for n in results:
+                content = Content(n[0],n[1])
+                contents.append(content)
+                print n[0],&apos;-&amp;gt;&apos;+n[1]
+        except urllib2.URLError, e:
+            if hasattr(e,&quot;reason&quot;):
+                print u&quot;错误原因&quot;,e
+    file = open(topic.name+&apos;.txt&apos;,&apos;w&apos;)
+    wiriteLog(contents,file)
+    return contents
+
+def wiriteLog(contentes,file):
+    for content in contentes:
+        file.writelines((&apos;\n&apos;+content.name+&apos;-&amp;gt;&apos;+content.content).encode(&quot;UTF-8&quot;))
+`&lt;/pre&gt;
+
+其中正则和前面的获取标题类似。
+
+### **4.完整流程**
+
+通过对每一个话题下的子话题进行爬去来获取所有的数据，完整代码如下：
+
+&lt;pre&gt;`# -*- coding: utf-8 -*-
+__author__ = &apos;akiyama&apos;
+import urllib
+import urllib2
+import re
+import json
+from com.learn.zhihuSearch.topic import *
+from com.learn.zhihuSearch.content import *
+import cookielib
+
+def getTopics():
+    zhihuTopics = []
+    url = &apos;https://www.zhihu.com/topics&apos;
+    cj = cookielib.CookieJar()
+    opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+    request = urllib2.Request(url)
+    response = opener.open(request)
+    pattern = re.compile(&apos;&amp;lt;li.*?data-id=&quot;(.*?)&quot;&amp;gt;&amp;lt;a.*?&amp;gt;(.*?)&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;&apos;,re.S)
+    results = re.findall(pattern,response.read().decode(&apos;utf-8&apos;))
+    for n1 in results:
+        print n1[0],n1[1]
+        topic = Topic(n1[0],n1[1])
+        zhihuTopics.append(topic)
+    return zhihuTopics
+
+def getSubTopic(topic):
+    url = &apos;https://www.zhihu.com/node/TopicsPlazzaListV2&apos;
+    isGet = True;
+    offset = -20;
+    contents = []
+    while isGet:
+        offset = offset + 20
+        values = {&apos;method&apos;: &apos;next&apos;, &apos;params&apos;: &apos;{&quot;topic_id&quot;:&apos;+topic.id+&apos;,&quot;offset&quot;:&apos;+str(offset)+&apos;,&quot;hash_id&quot;:&quot;&quot;}&apos;}
+        try:
+            data = urllib.urlencode(values)
+            request = urllib2.Request(url,data,headers)
+            response = urllib2.urlopen(request)
+            json_str = json.loads(response.read().decode(&apos;utf-8&apos;))
+            # 将获取到的数组转换成字符串
+            topicMsg = &apos;.&apos;.join(json_str[&apos;msg&apos;])
+            pattern = re.compile(&apos;&amp;lt;strong&amp;gt;(.*?)&amp;lt;/strong&amp;gt;.*?&amp;lt;p&amp;gt;(.*?)&amp;lt;/p&amp;gt;&apos;,re.S)
+            results = re.findall(pattern,topicMsg)
+            if len(results) ==0:
+                isGet =False
+            for n in results:
+                content = Content(n[0],n[1])
+                contents.append(content)
+                print n[0],&apos;-&amp;gt;&apos;+n[1]
+        except urllib2.URLError, e:
+            if hasattr(e,&quot;reason&quot;):
+                print u&quot;错误原因&quot;,e
+    file = open(topic.name+&apos;.txt&apos;,&apos;w&apos;)
+    wiriteLog(contents,file)
+    return contents
+
+def wiriteLog(contentes,file):
+    for content in contentes:
+        file.writelines((&apos;\n&apos;+content.name+&apos;-&amp;gt;&apos;+content.content).encode(&quot;UTF-8&quot;))
+
+print &apos;开始拉取数据...\n&apos;
+headers = {&apos;User-Agent&apos; : &apos;Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:35.0) Gecko/20100101 Firefox/35.0&apos;,
+           &apos;Content-Type&apos;:&apos;application/x-www-form-urlencoded; charset=UTF-8&apos;,
+           &apos;X-Requested-With&apos;:&apos;XMLHttpRequest&apos;,
+           &apos;Referer&apos;:&apos;https://www.zhihu.com/topics&apos;,
+           &apos;Cookie&apos;:&apos;__utma=51854390.517069884.1416212035.1416212035.1416212035.1; q_c1=c02bf44d00d240798bfabcfc95baeb56|1455778173000|1416205243000; _za=b1c8ae35-f986-46a2-b24a-cb9359dc6b2a; aliyungf_tc=AQAAAJ1m71jL1woArKqF22VFnL/wRy6C; _xsrf=9d494558f9271340ab24598d85b2a3c8; cap_id=&quot;MDNiMjcwM2U0MTRhNDVmYjgxZWVhOWI0NTA2OGU5OTg=|1455864276|2a4ce8247ebd3c0df5393bb5661713ad9eec01dd&quot;; n_c=1; _alicdn_sec=56c6ba4d556557d27a0f8c876f563d12a285f33a&apos;
+           }
+i = 0
+topics = getTopics()
+for topic in topics:
+    content = getSubTopic(topic)
+    i +=len(content)
+print &apos;知乎总话题数为：&apos;+str(i)
+print &apos;拉取数据结束&apos;
+</code></pre><blockquote>
+<p>在headers里面的Cookie有过期时间的，如果代码没有正确获取到数据，报302之类的错误一般可能试Cookie失效了，你们可以通过拷贝自己浏览器中的Cookie来获取</p>
+</blockquote>
+<p>运行结果是：</p>
+<p><a href="http://www.akiyamayzw.com/wp-content/uploads/2016/02/2016-02-23-150403屏幕截图.png" target="_blank" rel="noopener"><img src="http://www.akiyamayzw.com/wp-content/uploads/2016/02/2016-02-23-150403屏幕截图-98x300.png" alt="2016-02-23 15:04:03屏幕截图"></a><br>总共话题数量为：15884个</p>
+<h3 id="5-待改进的地方"><a href="#5-待改进的地方" class="headerlink" title="5.待改进的地方"></a><strong>5.待改进的地方</strong></h3><p>可以通过一下几点来改进爬虫的性能</p>
+<ul>
+<li>使用多线程来爬取知乎话题。每一话题开启一个线程来获取数据，这样可以大大减少爬取数据的总时间。</li>
+<li>保存每次获取cookie的数据，动态更新cookie值</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/10/19/android-svg/" rel="next" title="Android SVG初探">
+                <i class="fa fa-chevron-left"></i> Android SVG初探
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/10/30/失控--关于自治系统/" rel="prev" title="失控--关于自治系统">
+                失控--关于自治系统 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="uyan_frame"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="zhiwu_yan" />
+          <p class="site-author-name" itemprop="name">zhiwu_yan</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-分析"><span class="nav-number">1.</span> <span class="nav-text">1.分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-待改进的地方"><span class="nav-number">2.</span> <span class="nav-text">5.待改进的地方</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhiwu_yan</span>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    
+
+    
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2133838"></script>
+      <!-- UY END -->
+    
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

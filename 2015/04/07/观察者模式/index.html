@@ -1,0 +1,728 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.png?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="观察者模式属于23中涉及模式中应用最为广泛的一种，特别是在一些GUI的界面更新和数据更新中应用。在android中观察者模式应用也非常的常见，例如，事件的监听、广播的发送等等.那到底什么事观察者模式呢？ 一、什么是观察者模式我们来看看《Head first》一书 中对观察者模式是怎么描述的：定义了对象这之间一对多的依赖，这样一来，当一个对象改变状态的时候，它的所有依赖都会收到通知并自动更新。  &amp;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="观察者模式">
+<meta property="og:url" content="http://yoursite.com/2015/04/07/观察者模式/index.html">
+<meta property="og:site_name" content="秋山">
+<meta property="og:description" content="观察者模式属于23中涉及模式中应用最为广泛的一种，特别是在一些GUI的界面更新和数据更新中应用。在android中观察者模式应用也非常的常见，例如，事件的监听、广播的发送等等.那到底什么事观察者模式呢？ 一、什么是观察者模式我们来看看《Head first》一书 中对观察者模式是怎么描述的：定义了对象这之间一对多的依赖，这样一来，当一个对象改变状态的时候，它的所有依赖都会收到通知并自动更新。  &amp;">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://www.akiyamayzw.com/wp-content/uploads/2015/04/QQ截图20150407223926-300x223.png">
+<meta property="og:image" content="http://www.yesky.com/20020603/observer.gif">
+<meta property="og:updated_time" content="2017-12-25T15:51:29.299Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="观察者模式">
+<meta name="twitter:description" content="观察者模式属于23中涉及模式中应用最为广泛的一种，特别是在一些GUI的界面更新和数据更新中应用。在android中观察者模式应用也非常的常见，例如，事件的监听、广播的发送等等.那到底什么事观察者模式呢？ 一、什么是观察者模式我们来看看《Head first》一书 中对观察者模式是怎么描述的：定义了对象这之间一对多的依赖，这样一来，当一个对象改变状态的时候，它的所有依赖都会收到通知并自动更新。  &amp;">
+<meta name="twitter:image" content="http://www.akiyamayzw.com/wp-content/uploads/2015/04/QQ截图20150407223926-300x223.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2015/04/07/观察者模式/"/>
+
+
+
+
+
+  <title>观察者模式 | 秋山</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=62198010";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">秋山</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">要么读书要么旅行，身体和灵魂必须有一个在路上</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/07/观察者模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhiwu_yan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="秋山">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">观察者模式</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-07T23:25:46+08:00">
+                2015-04-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>观察者模式属于23中涉及模式中应用最为广泛的一种，特别是在一些GUI的界面更新和数据更新中应用。在android中观察者模式应用也非常的常见，例如，事件的监听、广播的发送等等.那到底什么事观察者模式呢？</p>
+<h3 id="一、什么是观察者模式"><a href="#一、什么是观察者模式" class="headerlink" title="一、什么是观察者模式"></a>一、什么是观察者模式</h3><p>我们来看看《Head first》一书 中对观察者模式是怎么描述的：<strong>定义了对象这之间一对多的依赖，这样一来，当一个对象改变状态的时候，它的所有依赖都会收到通知并自动更新。</strong></p>
+<p><a href="http://www.akiyamayzw.com/wp-content/uploads/2015/04/QQ截图20150407223926.png" target="_blank" rel="noopener"><img src="http://www.akiyamayzw.com/wp-content/uploads/2015/04/QQ截图20150407223926-300x223.png" alt="QQ截图20150407223926"></a></p>
+<p>&nbsp;</p>
+<p>主题（Subject）和观察者（Observer）定义了一对多的关系，观察者依赖于此主题，只要主题的状态发生改变观察者就会被通知，根据通知的风格，观察者可能因此而更新新值。我们来看一下UML图：</p>
+<p><img src="http://www.yesky.com/20020603/observer.gif" alt=""></p>
+<p>我们来看一下每个对象的作用和关联关系：</p>
+<p>1.Subject 抽象主题角色：也就是抽象的被观察者对象，里面保存了所有的观察者对象引用列表，提供了注册和反注册的功能。</p>
+<p>2.ConcreteSubject具体的主题角色：<span class="comment">将有关状态存入各ConcreteObserver对象</span> <span class="comment">   当它的状态发送改变时，向它的各个观察者发出通知</span> 。</p>
+<p>3.Observer 抽象观察者 ：为所有的具体观察者定义一个接口，在得到通知时更新自己。</p>
+<p>4.ConcreteObserver 具体观察者：<span class="comment">维护一个指向ConcreteObserver对象的引用</span> ，<span class="comment">存储有关状态，这些状态应与目标的状态保持一致，</span><span class="comment">实现Observer的更新接口是自身状态与目标的状态保持一致</span></p>
+<p>如果，还不明白，我们举一个常见的例子，医院里面很多病人等待做某件事情，比如等待看医生、等待拿药等等，当轮到某人的时候，护士会通知病人，比如轮到张三，护士会喊“张三”，这时候张三就会去做对应的事情。这个过程中护士就是被观察者对象，护士手中的病人名单就是保存的观察者对象引用，病人就是观察者。每一个病人会订阅某些事件，比如张三可能感兴趣的事件就是当护士喊”张三“这个事件。当然后面来的某些病人也可以排到护士的名单中，名单上的病人也可以告诉护士取消看病等等。护士不关心通知完病人后你去你是去看病还是拿药，因为这是病人决定的事情，护士只是起到一个通知的作用。</p>
+<h3 id="二、适用性"><a href="#二、适用性" class="headerlink" title="二、适用性"></a>二、适用性</h3><ol>
+<li><span class="comment">当一个抽象模型有两个方面，其中一个方面依赖于另一方面</span> 。</li>
+<li><span class="comment">将这两者封装成独立的对象中以使它们可以各自独立的改变和服用</span> 。</li>
+<li><span class="comment">当对一个对象的改变需要同时改变其他对象，而不知道具体有多少对象有待改变</span> 。</li>
+<li><span class="comment">当一个对象必须通知其它对象，而它又不能假定其它对象是谁</span> 。</li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/04/04/lisview/" rel="next" title="lisView优化（2）">
+                <i class="fa fa-chevron-left"></i> lisView优化（2）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/05/09/观察者模式在android 上的最佳实践/" rel="prev" title="观察者模式在android 上的最佳实践">
+                观察者模式在android 上的最佳实践 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="uyan_frame"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="zhiwu_yan" />
+          <p class="site-author-name" itemprop="name">zhiwu_yan</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、什么是观察者模式"><span class="nav-number">1.</span> <span class="nav-text">一、什么是观察者模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、适用性"><span class="nav-number">2.</span> <span class="nav-text">二、适用性</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhiwu_yan</span>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    
+
+    
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2133838"></script>
+      <!-- UY END -->
+    
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

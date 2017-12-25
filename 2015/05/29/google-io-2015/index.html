@@ -1,0 +1,739 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.png?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="作者 杨赛 发布于 2015年5月28日 本报道对Google I/O 2015大会的主题演讲进行概述。两个半小时的主题演讲覆盖了Android M、Android Wear、物联网、深度学习、Google Now、Google Photos、AndroidOne、ChromeBook、Google Maps、开发工具、App推广、在线教育、虚拟现实等话题。 Android M开发者预览版相比An">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Google I&#x2F;O 2015主题演讲(分享)">
+<meta property="og:url" content="http://yoursite.com/2015/05/29/google-io-2015/index.html">
+<meta property="og:site_name" content="秋山">
+<meta property="og:description" content="作者 杨赛 发布于 2015年5月28日 本报道对Google I/O 2015大会的主题演讲进行概述。两个半小时的主题演讲覆盖了Android M、Android Wear、物联网、深度学习、Google Now、Google Photos、AndroidOne、ChromeBook、Google Maps、开发工具、App推广、在线教育、虚拟现实等话题。 Android M开发者预览版相比An">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://cdn.infoqstatic.com/statics_s2_20150526-0157/resource/news/2015/05/google-io-2015-keynotes/zh/resources/jump.jpg">
+<meta property="og:updated_time" content="2017-12-25T15:51:29.301Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Google I&#x2F;O 2015主题演讲(分享)">
+<meta name="twitter:description" content="作者 杨赛 发布于 2015年5月28日 本报道对Google I/O 2015大会的主题演讲进行概述。两个半小时的主题演讲覆盖了Android M、Android Wear、物联网、深度学习、Google Now、Google Photos、AndroidOne、ChromeBook、Google Maps、开发工具、App推广、在线教育、虚拟现实等话题。 Android M开发者预览版相比An">
+<meta name="twitter:image" content="http://cdn.infoqstatic.com/statics_s2_20150526-0157/resource/news/2015/05/google-io-2015-keynotes/zh/resources/jump.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2015/05/29/google-io-2015/"/>
+
+
+
+
+
+  <title>Google I/O 2015主题演讲(分享) | 秋山</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=62198010";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">秋山</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">要么读书要么旅行，身体和灵魂必须有一个在路上</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/29/google-io-2015/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhiwu_yan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="秋山">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Google I/O 2015主题演讲(分享)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-29T10:23:59+08:00">
+                2015-05-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/备忘Google/" itemprop="url" rel="index">
+                    <span itemprop="name">备忘Google</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>作者 <a href="http://www.infoq.com/cn/author/%E6%9D%A8%E8%B5%9B" target="_blank" rel="noopener">杨赛</a> 发布于 2015年5月28日</p>
+<p>本报道对Google I/O 2015大会的主题演讲进行概述。两个半小时的主题演讲覆盖了Android M、Android Wear、物联网、深度学习、Google Now、Google Photos、AndroidOne、ChromeBook、Google Maps、开发工具、App推广、在线教育、虚拟现实等话题。</p>
+<h2 id="Android-M开发者预览版"><a href="#Android-M开发者预览版" class="headerlink" title="Android M开发者预览版"></a>Android M开发者预览版</h2><p>相比Android L引入的新设计material design，本次Android M主要在界面之下的层面做功课。据称Android M相比之前的版本修复了上千个bug，<a href="http://developer.android.com/preview/index.html" target="_blank" rel="noopener">功能相关的改变非常多</a>，主题演讲上重点只介绍了六个新增内容：</p>
+<ol>
+<li>App权限控制方式变更。以前在L版之前是安装的时候统一请求所有权限，而M版更改为安装时不请求权限，但在App运行中调用功能（比如摄像头）的时候询问用户。</li>
+<li>Chrome Custom Tabs。App内访问Web内容时，可以使用Chrome Custom Tabs作为页面显示的载体。</li>
+<li>App Links，在一个App中点击链接，直接在另一个App中打开该链接的实现方式。这需要开发者在自己的网站上添加一个叫做statements.json的文件，并且在AndroidManifest中进行声明。</li>
+<li>Android Pay支付平台。</li>
+<li>指纹识别API。</li>
+<li>省电模式Doze，有效减少设备长期闲置不动情况下的电力消耗。</li>
+</ol>
+<h2 id="Android-Wear"><a href="#Android-Wear" class="headerlink" title="Android Wear"></a>Android Wear</h2><p>2015年5月的Android Wear系统更新将带来Always-on App的支持。Always-on即“保持常亮”，这种保持常亮为了减少电能消耗而做成了纯黑白的显示模式。主题演讲上展示了时间显示、地图显示、购物清单显示等场景的保持常亮功能。</p>
+<p>目前Android Wear上已经有四千多个应用。</p>
+<h2 id="物联网（IoT）"><a href="#物联网（IoT）" class="headerlink" title="物联网（IoT）"></a>物联网（IoT）</h2><p>Google将IoT的技术实现划分为三个层面：底层的操作系统（OS层），中间的通讯层，上层的用户交互（UX层）。</p>
+<p>Google将在OS层面发布新的操作系统，<a href="https://developers.google.com/brillo/" target="_blank" rel="noopener">Project Brillo</a>，该系统基于Android，当然要更加精简了很多。其开发者预览版预计在2015年Q3公布。对于通讯层，Google则计划推出Weave通讯协议，用于在云端、手机端、以及Brillo设备端之间进行通讯。Weave的规范预计将在2015年Q4公布。</p>
+<h2 id="开发工具"><a href="#开发工具" class="headerlink" title="开发工具"></a>开发工具</h2><p>Android Studio 1.3预览版改进了Gradle的准确性和性能，加入了新的CPU和内存的profiler，并且开始支持C/C++。</p>
+<p>Web开发方面，Polymer升级到1.0。</p>
+<p>测试方面提供了Cloud Test Lab服务，该服务的入口将出现在Google开发者控制台界面里。</p>
+<p>Google SDK as Cocoapods：面向iOS平台提供Google服务的SDK。</p>
+<p>后端的Firebase，目前已经支持19万个App。Firebase为应用提供计算（Server）、数据、存储等后端服务，其背后依赖于Google Cloud Platform资源。</p>
+<h2 id="应用推广"><a href="#应用推广" class="headerlink" title="应用推广"></a>应用推广</h2><p>Cloud Messaging消息服务现在支持Android、iOS与Chrome平台，并支持按主题订阅的选项。</p>
+<p>对于在搜索、YouTube、Google Play等平台上的应用推广，本次Google推出了Universal App Campaigns，可以实现不限定推广平台的推广效果。此外，Google Play开发者控制台新增了Conversion Funnel，可以看到用户的转化路径。另外，Google Play现在允许开发者建立自己的开发者主页了。</p>
+<h2 id="虚拟现实（VR）"><a href="#虚拟现实（VR）" class="headerlink" title="虚拟现实（VR）"></a>虚拟现实（VR）</h2><p>去年发布的VR观看设备<a href="http://www.google.com/get/cardboard/" target="_blank" rel="noopener">CardBoard</a>今年做了一点改进，主要是把尺寸做大了一圈，现在可以支持6寸屏的手机。Google推出了面向学校的Expeditions服务，简单来说就是给一个班的学生人手一台CardBoard戴在头上，老师这边可以控制学生那里看到的画面，可以在一瞬间把一整个班的学生都带到长城或者意大利去郊游。老师们现在可以通过网络注册Expeditions服务。</p>
+<p>对于VR素材的摄像，Google公布了<a href="https://www.google.com/get/cardboard/jump/" target="_blank" rel="noopener">JUMP项目</a>。VR素材是带有深度信息的360度全景图像，Google提出的摄像方案是用16个摄像头排列成一圈，再把它们拍摄的图像通过算法合成（这个方案需要在合成阶段使用较多的计算资源，但好处是摄像的成本很低）。</p>
+<p><img src="http://cdn.infoqstatic.com/statics_s2_20150526-0157/resource/news/2015/05/google-io-2015-keynotes/zh/resources/jump.jpg" alt=""></p>
+<p>Google正在和GoPro合作制作符合JUMP规范的设备，16个摄像头的光学几何设计将在夏季公布，同时Google也会在YouTube上启动专门的JUMP频道播放这些VR视频。</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>视频链接：<a href="https://events.google.com/io2015/videos" title="google IO" target="_blank" rel="noopener">https://events.google.com/io2015/videos</a></p>
+<pre><code>http://www.ifanr.com/526337
+</code></pre>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/05/17/saving-android-view-state-correctly/" rel="next" title="Saving Android View state correctly">
+                <i class="fa fa-chevron-left"></i> Saving Android View state correctly
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/06/29/关注的艺术/" rel="prev" title="《少有人走的路》-关注的艺术">
+                《少有人走的路》-关注的艺术 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="uyan_frame"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="zhiwu_yan" />
+          <p class="site-author-name" itemprop="name">zhiwu_yan</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Android-M开发者预览版"><span class="nav-number">1.</span> <span class="nav-text">Android M开发者预览版</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android-Wear"><span class="nav-number">2.</span> <span class="nav-text">Android Wear</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#物联网（IoT）"><span class="nav-number">3.</span> <span class="nav-text">物联网（IoT）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开发工具"><span class="nav-number">4.</span> <span class="nav-text">开发工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#应用推广"><span class="nav-number">5.</span> <span class="nav-text">应用推广</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#虚拟现实（VR）"><span class="nav-number">6.</span> <span class="nav-text">虚拟现实（VR）</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhiwu_yan</span>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    
+
+    
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2133838"></script>
+      <!-- UY END -->
+    
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

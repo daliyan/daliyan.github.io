@@ -1,0 +1,1033 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="android,android开发,相机,自动聚焦," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.png?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="最近项目用到了相机拍照的功能，于是想着封装好一些通用性较好的相机调用，从百度和谷歌上查找出来的资料真的印证了“天下文章一大抄”的道理，而且它们实现的拍照功能大都存在缺陷，如聚焦问题、重复拍照问题、照片存储问题、横竖屏转换问题。一大堆的问题，而且程序的扩展性和可重用性实在不敢恭维，排版级其混乱。 最后无奈，打开API文档camera相机类,从最基础的学起，然后自己进行改进，从这里也告诉我们一个道理，">
+<meta name="keywords" content="android,android开发,相机,自动聚焦">
+<meta property="og:type" content="article">
+<meta property="og:title" content="相机开发（聚焦、横竖屏拍照、照片存储、连续拍照等）">
+<meta property="og:url" content="http://yoursite.com/2015/04/04/相机开发/index.html">
+<meta property="og:site_name" content="秋山">
+<meta property="og:description" content="最近项目用到了相机拍照的功能，于是想着封装好一些通用性较好的相机调用，从百度和谷歌上查找出来的资料真的印证了“天下文章一大抄”的道理，而且它们实现的拍照功能大都存在缺陷，如聚焦问题、重复拍照问题、照片存储问题、横竖屏转换问题。一大堆的问题，而且程序的扩展性和可重用性实在不敢恭维，排版级其混乱。 最后无奈，打开API文档camera相机类,从最基础的学起，然后自己进行改进，从这里也告诉我们一个道理，">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://img.blog.csdn.net/20140825164456989?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSVRiYWlsZWk=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta property="og:image" content="http://www.akiyamayzw.com/wp-content/uploads/2015/04/20140825165343241-169x300.gif">
+<meta property="og:updated_time" content="2017-12-25T15:51:29.297Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="相机开发（聚焦、横竖屏拍照、照片存储、连续拍照等）">
+<meta name="twitter:description" content="最近项目用到了相机拍照的功能，于是想着封装好一些通用性较好的相机调用，从百度和谷歌上查找出来的资料真的印证了“天下文章一大抄”的道理，而且它们实现的拍照功能大都存在缺陷，如聚焦问题、重复拍照问题、照片存储问题、横竖屏转换问题。一大堆的问题，而且程序的扩展性和可重用性实在不敢恭维，排版级其混乱。 最后无奈，打开API文档camera相机类,从最基础的学起，然后自己进行改进，从这里也告诉我们一个道理，">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20140825164456989?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSVRiYWlsZWk=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2015/04/04/相机开发/"/>
+
+
+
+
+
+  <title>相机开发（聚焦、横竖屏拍照、照片存储、连续拍照等） | 秋山</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=62198010";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">秋山</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">要么读书要么旅行，身体和灵魂必须有一个在路上</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/04/04/相机开发/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhiwu_yan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="秋山">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">相机开发（聚焦、横竖屏拍照、照片存储、连续拍照等）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-04-04T08:48:43+08:00">
+                2015-04-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近项目用到了相机拍照的功能，于是想着封装好一些通用性较好的相机调用，从百度和谷歌上查找出来的资料真的印证了“天下文章一大抄”的道理，而且它们实现的拍照功能大都存在缺陷，如聚焦问题、重复拍照问题、照片存储问题、横竖屏转换问题。一大堆的问题，而且程序的扩展性和可重用性实在不敢恭维，排版级其混乱。</p>
+<p>最后无奈，打开API文档camera相机类,从最基础的学起，然后自己进行改进，从这里也告诉我们一个道理，API文档才是学习起点，因为它会告诉你整个实现的原理和原因，能够对整个框架有一个整体的了解，看完API文档看其他的就有事半功倍的效果，吐槽完毕，下面来正式实现。</p>
+<p><strong>一．实现流程</strong></p>
+<p>这幅图是从API文档（最好是看英文版的）整理出来的，从这副图上面我们可以看出，主要是有6步，其中难点是创建相机预览类。</p>
+<p><img src="http://img.blog.csdn.net/20140825164456989?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvSVRiYWlsZWk=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""></p>
+<p><strong>二．权限声明</strong></p>
+<p>这个不讲了，直接加入声明权限代码，不明白的可以网上查查看</p>
+<p><pre class="lang:xhtml decode:true ">        &lt;uses-permission android:name=”android.permission.CAMERA” /&gt;<br>    &lt;uses-feature android:name=”android.hardware.camera” /&gt;<br>    &lt;uses-permission android:name=”android.permission.WRITE_EXTERNAL_STORAGE” /&gt;<br>    &lt;uses-permission android:name=”android.permission.ACCESS_FINE_LOCATION” /&gt;<br>    &lt;uses-feature android:name=”android.hardware.camera.autofocus” /&gt;<br>    &lt;uses-permission android:name=”android.permission.MOUNT_UNMOUNT_FILESYSTEMS” /&gt;</pre><br>&nbsp;</p>
+<p><strong>三 检查相机和获取相机实例</strong></p>
+<p>新建CameraCheck类，主要有2个方法，代码如下</p>
+<p><pre class="lang:java decode:true">public class CameraCheck {</pre></p>
+<pre><code>public static boolean CheckCamera(Context mContext) {
+    if (mContext.getPackageManager().hasSystemFeature(
+            PackageManager.FEATURE_CAMERA)) {
+        return true;
+    } else {
+        Toast.makeText(mContext, &quot;相机不存在！&quot;, Toast.LENGTH_SHORT).show();
+        return false;
+    }
+}
+
+/** A safe way to get an instance of the Camera object. */
+public static Camera getCameraInstance(Context mContext) {
+    Camera c = null;
+    if (CheckCamera(mContext)) {
+        try {
+            c = Camera.open();
+        } catch (Exception e) {
+            c=null;
+        }
+    }
+    return c; // returns null if camera is unavailable
+}
+</code></pre><p>}<br>第一个方法用来检查相机是否存在，这个方法是来自API文档，使用方法</p>
+<p>mContext.getPackageManager().hasSystemFeature(PackageManager._FEATURE<em>CAMERA</em>)</p>
+<p>hasSystemFeature(String name)方法返回设备是否支持name功能的真假值;</p>
+<p>通过方法getCameraInstance返回相机的实例，通过调用该方法，mContext能够获得该相机资源，只有获得了该相机资源才能够对相机进行操作。</p>
+<p><strong>四．创建相机预览类(重点)</strong></p>
+<p><strong>        </strong>我们在拍照之前需要对取景进行预览，这里我们需要使用SurfaceView控件，关于SurfaceView控件我们先简单的了解一下（别急，磨刀不误砍柴工）。</p>
+<p>SurfaceView是View的子类，所以它拥有View的一切方法和属性，这一点我们从命名上面就可以看出来，比如绘制方法、大小等属性；它比View多了一个Surface的东西，Surface是专门用来绘制的类，而SurfaceView可以控制surface绘制的大小、位置等等；</p>
+<p>可能有人会问，那为什么要专门这样一个类来绘制呢？不是有OnDraw()方法吗？相比于OnDraw()方法它有很多优势，如下总结：</p>
+<p>（1）在频繁更新UI线程的情况下，可以使用封装好的surface来频繁的更新，因为surface可以使用后台线程对UI界面进行绘制，而OnDraw()等绘制方法很难做到（除非你频繁的调用handler来更新主界面，这得多麻烦啊！）；</p>
+<p>（2）SurfaceView可以用来绘制2D或者3D图形，绘制一些动态曲线等，它显示的速度会比一般的快很多，因为他是通过硬件加速的方式来绘制的。</p>
+<p>（3）它可以用来接受硬件的数据来绘制图像。</p>
+<p>所以，通过以上几点我们可以知道，用它来接受相机的预览是理所当然的。那么它的使用方法是怎么样的呢？下创建一个surfaceView的继承类一般需要实现如下几个方法：</p>
+<p>（1）surfaceCreated(SurfaceHolderholder):在该类创建的时候调用，这里一般需要实现一些初始化的工作，SurfaceHodler用来设定surface的大小位置等等；</p>
+<p>（2）surfaceChanged(SurfaceHolderholder, int format, int width,int height)在surface大小发生改变时候调用，这里实现图形的绘制；</p>
+<p>（3）surfaceDestroyed(SurfaceHolderholder)在surface销毁时候调用，这里一般对资源进行释放；</p>
+<p>（4）实现SurfaceHodler.CallBack回调方法，在surfaceView创建完成后自动调用类本身；</p>
+<p>在实现之前我们先来看我们的需求，我们要实现的功能：预览、拍照、自动聚焦、触摸聚焦、连续拍照、照片存储。下面我们来创建一个SurfaceView类CameraPreview，它继承了SurfaceView，并实现接口SurfaceHolder.Callback</p>
+<p>因此我们需要在surfaceCreated方法中创建一个camer实例，这个实例可以在这个类中进行调用,实现代码如下：</p>
+<p><pre class="lang:java decode:true ">/**</pre></p>
+<pre><code> * 创建的时候自动调用该方法
+ */
+@Override
+public void surfaceCreated(SurfaceHolder holder) {
+    if (mCamera == null) {
+        mCamera = CameraCheck.getCameraInstance(mContext);
+    }
+    try {
+        if(mCamera!=null){
+            mCamera.setPreviewDisplay(holder);   
+        }
+    } catch (IOException e) {
+        if (null != mCamera) {
+            mCamera.release();
+            mCamera = null;
+            isPreview=false;
+        }
+        e.printStackTrace();
+    }
+
+}&lt;/pre&gt;
+</code></pre><p>这句代码  mCamera.setPreviewDisplay(holder)的意思是创建一个预览的hodler;我们在surfaceChanged中进行预览窗口的绘制调用的是startPreview()方法来开始绘制，代码如下：</p>
+<p><pre class="lang:java decode:true">/**</pre></p>
+<ul>
+<li>当surface的大小发生改变的时候自动调用的<br>*/<br>@Override<br>public void surfaceChanged(SurfaceHolder holder, int format, int width,<br>int height) {<br>if (mHolder.getSurface() == null) {<br>return;<br>}<br>try {<br>setCameraParms();<br>mCamera.setPreviewDisplay(holder);<br>mCamera.startPreview();<br>reAutoFocus();<br>} catch (Exception e) {<br>Log.d(TAG, “Error starting camera preview: “ + e.getMessage());<br>}<br>}<br>其中有2个比较关键的方法没有实现， setCameraParms()和reAutoFocus()，setCameraParms();函数用来设置预览图片的参数，其中关键的为预览图片的大小和拍照保存的尺寸大小，很多的网上实现的程序拍出来的照片很小模糊的原因就是没有设置好照片的尺寸，这个照片的尺寸是根据手机本身能够支持的尺寸有很大关系。reAutoFocus()是自动聚焦的方法，需要动态获取reAutoFocus()函数是自动聚焦的实现；</li>
+</ul>
+<p>我们首先来看一下setCameraParms()方法的实现：</p>
+<p><pre class="lang:java decode:true">private void setCameraParms(){<br>        Camera.Parameters myParam = mCamera.getParameters();<br>        List&lt;Camera.Size&gt; mSupportedsizeList =myParam.getSupportedPictureSizes();<br>        if(mSupportedsizeList.size() &gt; 1) {<br>            Iterator&lt;Camera.Size&gt; itos = mSupportedsizeList.iterator();<br>            while (itos.hasNext()){<br>                Camera.Size curSize = itos.next();<br>                int curSupporSize=curSize.width <em> curSize.height;<br>                int fixPictrueSize= setFixPictureWidth  </em> setFixPictureHeight;<br>                if( curSupporSize&gt;fixPictrueSize &amp;&amp; curSupporSize &lt;= maxPictureSize) {<br>                    setFixPictureWidth  = curSize.width;<br>                    setFixPictureHeight = curSize.height;<br>                }<br>            }<br>        }    if (setFixPictureWidth != 0 &amp;&amp; setFixPictureHeight != 0) {<br>            myParam.setPictureSize(setFixPictureWidth , setFixPictureHeight);<br>        }</pre><br>myParam.setJpegQuality(100);mCamera.setParameters(myParam);if (myParam.getMaxNumDetectedFaces() &gt; 0){ mCamera.startFaceDetection();}}</p>
+<p>通过myParam.getSupportedPictureSizes();获取到手机支持的所有尺寸的枚举，并设置最大的固定尺寸这里设置最大为maxPictureSize = 5000000</p>
+<p>reAutoFocus()的实现为：</p>
+<p><pre class="lang:java decode:true">        /**</pre></p>
+<pre><code> * Call the camera to Auto Focus
+ */
+public void reAutoFocus() {
+    if (isSupportAutoFocus) {
+        mCamera.autoFocus(new AutoFocusCallback() {
+            @Override
+            public void onAutoFocus(boolean success, Camera camera) {
+            }
+        });
+    }
+}&lt;/pre&gt;
+</code></pre><p>使用回调函数autoFocus来实现自动聚焦</p>
+<p><strong>五．拍照</strong></p>
+<p><strong>    </strong>拍照方法有一个难点是横竖屏拍照的转换和存储，网上大都实现的是默认的横屏拍照，一旦换成竖屏后预览就会出现问题，而且存储的照片也有问题，因此为了解决这个问题，我们需要时刻监听方向传感器的变化，得到当前的旋转角度，我么可以通过调用OrientationEventListener系统监听类来得到当前角度，自定义MyOrientationDetector代码如下：</p>
+<p><pre class="lang:java decode:true ">/**</pre></p>
+<ul>
+<li>方向变化监听器，监听传感器方向的改变</li>
+<li><p>@author zw.yan<br><em>
+</em>/<br>public class MyOrientationDetector extends OrientationEventListener{<br> int Orientation;<br> public MyOrientationDetector(Context context ) {</p>
+<pre><code>super(context );
+</code></pre><p> }<br> @Override<br> public void onOrientationChanged(int orientation) {</p>
+<pre><code>Log.i(&quot;MyOrientationDetector &quot;,&quot;onOrientationChanged:&quot;+orientation);
+this.Orientation=orientation;
+Log.d(&quot;MyOrientationDetector&quot;,&quot;当前的传感器方向为&quot;+orientation);
+</code></pre><p> }</p>
+<p> public int getOrientation(){</p>
+<pre><code>return Orientation;
+</code></pre><p> }<br>}<br>在预览类中我们定义拍照方法TakePhone()，代码如下：<br><pre class="lang:java decode:true ">/**</pre></p>
+<ul>
+<li>调整照相的方向，设置拍照相片的方向<br>*/<br>private void takePhoto() {<br> cameraOrientation = new MyOrientationDetector(mContext);<br> if (mCamera != null) {<pre><code>int orientation = cameraOrientation.getOrientation();
+Camera.Parameters cameraParameter = mCamera.getParameters();
+cameraParameter.setRotation(90);
+cameraParameter.set(&quot;rotation&quot;, 90);
+if ((orientation &amp;gt;= 45) &amp;amp;&amp;amp; (orientation &amp;lt; 135)) {
+    cameraParameter.setRotation(180);
+    cameraParameter.set(&quot;rotation&quot;, 180);
+}
+if ((orientation &amp;gt;= 135) &amp;amp;&amp;amp; (orientation &amp;lt; 225)) {
+    cameraParameter.setRotation(270);
+    cameraParameter.set(&quot;rotation&quot;, 270);
+}
+if ((orientation &amp;gt;= 225) &amp;amp;&amp;amp; (orientation &amp;lt; 315)) {
+    cameraParameter.setRotation(0);
+    cameraParameter.set(&quot;rotation&quot;, 0);
+}
+mCamera.setParameters(cameraParameter);
+mCamera.takePicture(shutterCallback, pictureCallback, mPicture);
+</code></pre> }<br>}<br><br>在角度范围内自动调整旋转图片的角度，具体旋转的方式如代码，从而使存储的图片能够正常显示。</li>
+</ul>
+</li>
+</ul>
+<p><strong>六．图片保存</strong></p>
+<p>在拍照时需要对图片进行保存，但是不能影响图片的下一次拍照，因此我们需要采用异步线程的方式，可以使用AsyncTask类，在拍照完成时进行调用如下代码：</p>
+<p><pre class="lang:java decode:true ">public class SavePictureTask extends AsyncTask&lt;byte[], String, String&gt; {<br>        @SuppressLint(“SimpleDateFormat”)<br>        @Override<br>        protected String doInBackground(byte[]… params) {<br>            File pictureFile = FileUtil.getOutputMediaFile(MEDIA_TYPE_IMAGE,<br>                    mContext);<br>            if (pictureFile == null) {<br>                Toast.makeText(mContext, “请插入存储卡！”, Toast.LENGTH_SHORT).show();<br>                return null;<br>            }<br>            try {<br>                FileOutputStream fos = new FileOutputStream(pictureFile);<br>                fos.write(params[0]);<br>                fos.flush();<br>                fos.close();<br>            } catch (FileNotFoundException e) {<br>                Log.d(TAG, “File not found: “ + e.getMessage());<br>            } catch (IOException e) {<br>                Log.d(TAG, “Error accessing file: “ + e.getMessage());<br>            }</pre></p>
+<pre><code>        return null;
+    }
+}&lt;/pre&gt;
+</code></pre><p>这是基本对文件异步线程的IO操作有什么不明白的可以去看对应的API文档。</p>
+<p>下面我将整个类贴出来：</p>
+<p><pre class="lang:java decode:true ">/**</pre></p>
+<ul>
+<li>sufaceView 的预览类，其中SurfaceHolder.CallBack用来监听Surface的变化，</li>
+<li>当Surface发生改变的时候自动调用该回调方法</li>
+<li>通过调用方SurfaceHolder.addCallBack来绑定该方法</li>
+<li><p>@author zw.yan<br><em>
+</em>/<br>public class CameraPreview extends SurfaceView implements</p>
+<pre><code>SurfaceHolder.Callback {
+</code></pre><p> private String TAG = “CameraPreview”;<br> /**</p>
+<ul>
+<li>Surface的控制器，用来控制预览等操作<br><em>/<br>private SurfaceHolder mHolder;<br>/*</em></li>
+<li>相机实例<br><em>/<br>private Camera mCamera = null;<br>/*</em></li>
+<li>图片处理<br><em>/<br>public static final int MEDIA_TYPE_IMAGE = 1;<br>/*</em></li>
+<li>预览状态标志<br><em>/<br>private boolean isPreview = false;<br>/*</em></li>
+<li>设置一个固定的最大尺寸<br><em>/<br>private int maxPictureSize = 5000000;<br>/*</em></li>
+<li>是否支持自动聚焦，默认不支持<br><em>/<br>private Boolean isSupportAutoFocus = false;<br>/*</em></li>
+<li>获取当前的context<br><em>/<br>private Context mContext;<br>/*</em></li>
+<li>当前传感器的方向，当方向发生改变的时候能够自动从传感器管理类接受通知的辅助类<br><em>/<br>MyOrientationDetector cameraOrientation;<br>/*</em></li>
+<li>设置最适合当前手机的图片宽度<br><em>/<br>int setFixPictureWidth = 0;<br>/*</em></li>
+<li><p>设置当前最适合的图片高度<br>*/<br>int setFixPictureHeight = 0;</p>
+<p>@SuppressWarnings(“deprecation”)<br>public CameraPreview(Context context) {<br> super(context);<br> this.mContext = context;<br> isSupportAutoFocus = context.getPackageManager().hasSystemFeature(</p>
+<pre><code>PackageManager.FEATURE_CAMERA_AUTOFOCUS);
+</code></pre><p> mHolder = getHolder();<br> //兼容android 3.0以下的API，如果超过3.0则不需要设置该方法<br> if(Build.VERSION.SDK_INT &lt; Build.VERSION_CODES.HONEYCOMB){</p>
+<pre><code>mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+</code></pre><p> }<br> mHolder.addCallback(this);//绑定当前的回调方法<br>}</p>
+<p>/**</p>
+</li>
+<li><p>创建的时候自动调用该方法<br>*/<br>@Override<br>public void surfaceCreated(SurfaceHolder holder) {<br> if (mCamera == null) {</p>
+<pre><code>mCamera = CameraCheck.getCameraInstance(mContext);
+</code></pre><p> }<br> try {</p>
+<pre><code>if(mCamera!=null){
+    mCamera.setPreviewDisplay(holder);   
+}
+</code></pre><p> } catch (IOException e) {</p>
+<pre><code>if (null != mCamera) {
+    mCamera.release();
+    mCamera = null;
+    isPreview=false;
+}
+e.printStackTrace();
+</code></pre><p> }</p>
+<p>}<br>/**</p>
+</li>
+<li><p>当surface的大小发生改变的时候自动调用的<br>*/<br>@Override<br>public void surfaceChanged(SurfaceHolder holder, int format, int width,</p>
+<pre><code>int height) {
+</code></pre><p> if (mHolder.getSurface() == null) {</p>
+<pre><code>return;
+</code></pre><p> }<br> try {</p>
+<pre><code>setCameraParms();
+mCamera.setPreviewDisplay(holder);
+mCamera.startPreview();
+reAutoFocus();
+</code></pre><p> } catch (Exception e) {</p>
+<pre><code>Log.d(TAG, &quot;Error starting camera preview: &quot; + e.getMessage());
+</code></pre><p> }<br>}</p>
+<p>private void setCameraParms(){<br> Camera.Parameters myParam = mCamera.getParameters();<br> List&lt;Camera.Size&gt; mSupportedsizeList =myParam.getSupportedPictureSizes();<br> if(mSupportedsizeList.size() &gt; 1) {</p>
+<pre><code>Iterator&amp;lt;Camera.Size&amp;gt; itos = mSupportedsizeList.iterator();
+while (itos.hasNext()){
+    Camera.Size curSize = itos.next();
+    int curSupporSize=curSize.width * curSize.height;
+    int fixPictrueSize= setFixPictureWidth  * setFixPictureHeight;
+    if( curSupporSize&amp;gt;fixPictrueSize &amp;amp;&amp;amp; curSupporSize &amp;lt;= maxPictureSize) {
+        setFixPictureWidth  = curSize.width;
+        setFixPictureHeight = curSize.height;
+    }
+}
+</code></pre><p> }&lt;pre name=”code” class=”java”&gt;    if (setFixPictureWidth != 0 &amp;&amp; setFixPictureHeight != 0) {</p>
+<pre><code>myParam.setPictureSize(setFixPictureWidth , setFixPictureHeight);            
+</code></pre><p> }&lt;pre name=”code” class=”java”&gt;&lt;span style=”white-space:pre”&gt;        &lt;/span&gt;myParam.setJpegQuality(100);<br> mCamera.setParameters(myParam);<br> if (myParam.getMaxNumDetectedFaces() &gt; 0){</p>
+<pre><code>mCamera.startFaceDetection();
+</code></pre><p> }<br>}</p>
+<p>@Override<br>public void surfaceDestroyed(SurfaceHolder holder) {<br> mCamera.stopPreview();<br> mCamera.release();<br> mCamera = null;<br>}</p>
+<p>/**</p>
+</li>
+<li>Call the camera to Auto Focus<br>*/<br>public void reAutoFocus() {<br> if (isSupportAutoFocus) {<pre><code>mCamera.autoFocus(new AutoFocusCallback() {
+    @Override
+    public void onAutoFocus(boolean success, Camera camera) {
+    }
+});
+</code></pre> }<br>}<br>/**</li>
+<li><p>自动聚焦，然后拍照<br>*/<br>public void takePicture() {<br> if (mCamera != null) {</p>
+<pre><code>mCamera.autoFocus(autoFocusCallback);
+</code></pre><p> }<br>}</p>
+<p>private AutoFocusCallback autoFocusCallback = new AutoFocusCallback() {</p>
+<p> public void onAutoFocus(boolean success, Camera camera) {</p>
+<pre><code>// TODO Auto-generated method stub
+
+if (success) {
+    Log.i(TAG, &quot;autoFocusCallback: success...&quot;);
+    takePhoto();
+} else {
+    Log.i(TAG, &quot;autoFocusCallback: fail...&quot;);
+    if (isSupportAutoFocus) {
+        takePhoto();
+    }
+}
+</code></pre><p> }<br>};<br>/**</p>
+</li>
+<li><p>调整照相的方向，设置拍照相片的方向<br>*/<br>private void takePhoto() {<br> cameraOrientation = new MyOrientationDetector(mContext);<br> if (mCamera != null) {</p>
+<pre><code>int orientation = cameraOrientation.getOrientation();
+Camera.Parameters cameraParameter = mCamera.getParameters();
+cameraParameter.setRotation(90);
+cameraParameter.set(&quot;rotation&quot;, 90);
+if ((orientation &amp;gt;= 45) &amp;amp;&amp;amp; (orientation &amp;lt; 135)) {
+    cameraParameter.setRotation(180);
+    cameraParameter.set(&quot;rotation&quot;, 180);
+}
+if ((orientation &amp;gt;= 135) &amp;amp;&amp;amp; (orientation &amp;lt; 225)) {
+    cameraParameter.setRotation(270);
+    cameraParameter.set(&quot;rotation&quot;, 270);
+}
+if ((orientation &amp;gt;= 225) &amp;amp;&amp;amp; (orientation &amp;lt; 315)) {
+    cameraParameter.setRotation(0);
+    cameraParameter.set(&quot;rotation&quot;, 0);
+}
+mCamera.setParameters(cameraParameter);
+mCamera.takePicture(shutterCallback, pictureCallback, mPicture);
+</code></pre><p> }<br>}</p>
+<p>private ShutterCallback shutterCallback = new ShutterCallback() {<br> @Override<br> public void onShutter() {</p>
+<pre><code>// TODO Auto-generated method stub
+</code></pre><p> }<br>};</p>
+<p>private PictureCallback pictureCallback = new PictureCallback() {</p>
+<p> @Override<br> public void onPictureTaken(byte[] arg0, Camera arg1) {</p>
+<pre><code>// TODO Auto-generated method stub
+</code></pre><p> }<br>};<br>private PictureCallback mPicture = new PictureCallback() {</p>
+<p> @Override<br> public void onPictureTaken(byte[] data, Camera camera) {</p>
+<pre><code>new SavePictureTask().execute(data);
+mCamera.startPreview();//重新开始预览
+</code></pre><p> }<br>};</p>
+<p>public class SavePictureTask extends AsyncTask&lt;byte[], String, String&gt; {<br> @SuppressLint(“SimpleDateFormat”)<br> @Override<br> protected String doInBackground(byte[]… params) {</p>
+<pre><code>File pictureFile = FileUtil.getOutputMediaFile(MEDIA_TYPE_IMAGE,
+        mContext);
+if (pictureFile == null) {
+    Toast.makeText(mContext, &quot;请插入存储卡！&quot;, Toast.LENGTH_SHORT).show();
+    return null;
+}
+try {
+    FileOutputStream fos = new FileOutputStream(pictureFile);
+    fos.write(params[0]);
+    fos.flush();
+    fos.close();
+} catch (FileNotFoundException e) {
+    Log.d(TAG, &quot;File not found: &quot; + e.getMessage());
+} catch (IOException e) {
+    Log.d(TAG, &quot;Error accessing file: &quot; + e.getMessage());
+}
+
+return null;
+</code></pre><p> }<br>}<br>@Override<br>public boolean onTouchEvent(MotionEvent event) {<br> reAutoFocus();<br> return false;<br>}</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>}<br><br>文件的布局和调用如下：</p>
+<p><pre class="lang:java decode:true ">public class CameraActivity extends Activity{</pre></p>
+<pre><code>private CameraPreview mPreview;
+public static final int MEDIA_TYPE_IMAGE = 1;
+public static final int MEDIA_TYPE_VIDEO = 2;
+private String TAG=&quot;CameraActivity&quot;;
+private FrameLayout preview;
+private ImageButton captureButton;
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+    // TODO Auto-generated method stub
+    super.onCreate(savedInstanceState);
+    requestWindowFeature(Window.FEATURE_NO_TITLE);  
+    this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    setContentView(R.layout.camera_preview);
+    mPreview = new CameraPreview(this);
+    preview = (FrameLayout) findViewById(R.id.camera_preview);
+    preview.addView(mPreview);
+    captureButton = (ImageButton) findViewById(R.id.button_capture);
+    captureButton.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            mPreview.takePicture();
+        }
+
+    });
+}
+
+@Override
+protected void onDestroy() {
+    // TODO Auto-generated method stub
+    super.onDestroy();
+}
+</code></pre><p>}<br>&nbsp;</p>
+<p><pre class="lang:xhtml decode:true ">&lt;?xml version=”1.0” encoding=”utf-8”?&gt;<br>&lt;LinearLayout xmlns:android=”<a href="http://schemas.android.com/apk/res/android" target="_blank" rel="noopener">http://schemas.android.com/apk/res/android</a>“<br>    android:orientation=”horizontal”<br>    android:layout_width=”match_parent”<br>    android:layout_height=”match_parent”<br>    android:background=”#000”&gt;<br>  &lt;FrameLayout<br>    android:id=”@+id/camera_preview”<br>    android:layout_width=”match_parent”<br>    android:layout_height=”match_parent”<br>    android:layout_weight=”1”<br>    /&gt;</pre></p>
+<p>  &lt;ImageButton<br>    android:id=”@+id/button_capture”<br>    android:layout_width=”wrap_content”<br>    android:layout_height=”wrap_content”<br>    android:layout_gravity=”center”<br>    android:src=”@drawable/camera_icon”<br>    android:background=”#00000000”<br>    /&gt;<br>&lt;/LinearLayout&gt;<br>最终效果如下：</p>
+<p><a href="http://www.akiyamayzw.com/wp-content/uploads/2015/04/20140825165343241.gif" target="_blank" rel="noopener"><img src="http://www.akiyamayzw.com/wp-content/uploads/2015/04/20140825165343241-169x300.gif" alt="20140825165343241"></a></p>
+<p>&nbsp;</p>
+<p>注意，里面有一些类没有具体说明，具体可以查看后面的代码下载链接，有什么不明白的可以发邮件，邮件地址为dali_yan@yeah.net</p>
+<p>转载请注明出处,代码下载地址：<a href="http://download.csdn.net/detail/itbailei/7816613" target="_blank" rel="noopener">下载地址</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/android/" rel="tag"># android</a>
+          
+            <a href="/tags/android开发/" rel="tag"># android开发</a>
+          
+            <a href="/tags/相机/" rel="tag"># 相机</a>
+          
+            <a href="/tags/自动聚焦/" rel="tag"># 自动聚焦</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/04/04/android 列表通用适配器/" rel="next" title="android 列表通用适配器">
+                <i class="fa fa-chevron-left"></i> android 列表通用适配器
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/04/04/安卓ListView优化（1）/" rel="prev" title="安卓ListView优化（1）">
+                安卓ListView优化（1） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="uyan_frame"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="zhiwu_yan" />
+          <p class="site-author-name" itemprop="name">zhiwu_yan</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhiwu_yan</span>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    
+
+    
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2133838"></script>
+      <!-- UY END -->
+    
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,836 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.png?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="Random-Access Memory(随机存取存储器)在任何软件开发环境中是一种非常宝贵的资源，移动设备上面由于物理内存的受限显得更加宝贵。虽然android的Dalvik虚拟机能够自动回收内存，但是并不意味着你能够忽视对内存的管理。为了能够让垃圾回收机制能够自动回收你分配的内存，你应当避免产生内存泄漏（通常是因为持有一个全局对象的引用而导致的），并且在合适的时机主动释放掉引用的对象（通过对某">
+<meta property="og:type" content="article">
+<meta property="og:title" content="管理应用的内存">
+<meta property="og:url" content="http://yoursite.com/2015/10/09/管理应用的内存/index.html">
+<meta property="og:site_name" content="秋山">
+<meta property="og:description" content="Random-Access Memory(随机存取存储器)在任何软件开发环境中是一种非常宝贵的资源，移动设备上面由于物理内存的受限显得更加宝贵。虽然android的Dalvik虚拟机能够自动回收内存，但是并不意味着你能够忽视对内存的管理。为了能够让垃圾回收机制能够自动回收你分配的内存，你应当避免产生内存泄漏（通常是因为持有一个全局对象的引用而导致的），并且在合适的时机主动释放掉引用的对象（通过对某">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-12-25T15:51:29.298Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="管理应用的内存">
+<meta name="twitter:description" content="Random-Access Memory(随机存取存储器)在任何软件开发环境中是一种非常宝贵的资源，移动设备上面由于物理内存的受限显得更加宝贵。虽然android的Dalvik虚拟机能够自动回收内存，但是并不意味着你能够忽视对内存的管理。为了能够让垃圾回收机制能够自动回收你分配的内存，你应当避免产生内存泄漏（通常是因为持有一个全局对象的引用而导致的），并且在合适的时机主动释放掉引用的对象（通过对某">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2015/10/09/管理应用的内存/"/>
+
+
+
+
+
+  <title>管理应用的内存 | 秋山</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=62198010";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">秋山</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">要么读书要么旅行，身体和灵魂必须有一个在路上</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/10/09/管理应用的内存/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhiwu_yan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="秋山">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">管理应用的内存</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-10-09T12:53:24+08:00">
+                2015-10-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/" itemprop="url" rel="index">
+                    <span itemprop="name">android</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android/文章翻译/" itemprop="url" rel="index">
+                    <span itemprop="name">文章翻译</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Random-Access Memory(随机存取存储器)在任何软件开发环境中是一种非常宝贵的资源，移动设备上面由于物理内存的受限显得更加宝贵。虽然android的Dalvik虚拟机能够自动回收内存，但是并不意味着你能够忽视对内存的管理。<br>为了能够让垃圾回收机制能够自动回收你分配的内存，你应当避免产生内存泄漏（通常是因为持有一个全局对象的引用而导致的），并且在合适的时机主动释放掉引用的对象（通过对某些生命周期中回调来达到，后面将会讨论）。对于绝大部分的应用来说，当你的对象离开了当前活动线程时候Dalvik虚拟机的垃圾回收就会自动回收对象。<br>这篇文章将讨论如何管理你android app内存的分配和回收，怎样降低你开发应用内存的占用。你也可以参考其它书籍或者在线文档来学习如何在开发JAVA程序的时候如何管理你的资源，如果你需要学习分析你应用内存的使用情况你可以参考<a href="http://developer.android.com/tools/debugging/debugging-memory.html" target="_blank" rel="noopener">Investigating Your RAM Usage</a>.</p>
+<h4 id="1-android-是怎样管理内存的？"><a href="#1-android-是怎样管理内存的？" class="headerlink" title="1.android 是怎样管理内存的？"></a>1.android 是怎样管理内存的？</h4><p>Android没有使用交换内存空间，但是它也使用了<a href="http://en.wikipedia.org/wiki/Paging" target="_blank" rel="noopener">paging</a>和<a href="http://en.wikipedia.org/wiki/Memory-mapped_files" target="_blank" rel="noopener">memory-mapping</a>的方式来管理内存。这意味这你对内存区域的任何修改（无论你分配了新的对象或者访问了内存映射中的内容）它都不会被置换出来，而是常驻在RAM区域。所以你只能通过释放对象的引用来让垃圾回收器来回收它。只有一种情况是例外的，那就是你没有对内存映射文件做任何的修改，例如，其它地方需要使用这个内存中的对象。</p>
+<h4 id="2-共享内存"><a href="#2-共享内存" class="headerlink" title="2.共享内存"></a>2.共享内存</h4><p>Android系统通过以下几种方式在多个进程中进行内存的共享:</p>
+<ul>
+<li>每一个应用进程是通过一个叫做Zygote的进程中fork出来的，Zygote进程是在系统启动和导入framework代码、资源（例如activity的主题）时启动的。为了启动一个新的应用进程，系统会fork一个Zygote进程并在一个新的进程中运行应用的代码。这使得大多数的RAM pages被用来分配给framework的代码，同时使得RAM资源能够在应用的所有进程中进行共享。</li>
+<li>大部分的静态数据是被映射到一个进程中。它不但允许相同的数据被共享到两个不同的进程中，而且允许在需要的时候它被调出内存区域。例如静态数据：Dalvik code（放在一个预链接好的 .odex 文件中以便直接mapping）、app资源（通过把资源表结构设计成便于mmapping的数据结构，另外还可以通过把APK中的文件做aligning的操作来优化）或者普通的一些本地代码.so文件。</li>
+<li>在一些场合，Android通过显式的分配共享内存区域(例如ashmem或者gralloc)来实现一些动态RAM区域能够在不同进程间进行共享。例如，window surfaces在app与screen compositor之间使用共享的内存，cursor buffers在content provider与client之间使用共享的内存。<br>由于共享内存的广泛使用，你必须关系你的应用内存使用情况。如果你要分析的应用的内存使用，可以参考文章：<a href="http://developer.android.com/tools/debugging/debugging-memory.html" target="_blank" rel="noopener">Investigating Your RAM Usage</a>.</li>
+</ul>
+<h4 id="3-应用内存的分配和回收"><a href="#3-应用内存的分配和回收" class="headerlink" title="3.应用内存的分配和回收"></a>3.应用内存的分配和回收</h4><p>关于Android内存回收和分配你需要了解一些事实：</p>
+<ul>
+<li>Dalvik分配给每个进程的一定虚拟内存范围。它就是逻辑上堆大小（head size），如果需要可以申请更大的堆内存（但是给每一个应用有一个限制）</li>
+<li>堆内存的逻辑大小不等于实际使用的物理内存大小，在检查你应用的堆内存的时候，它会计算一个叫做PSS的值，PSS的值包含了应用所占共享内存的的大小。（假设共享内存大小是10M，一共有20个Process在共享使用，根据权重，可能认为其中有0.3M才能真正算是你的进程所使用的）关于更多PSS的信息可以参考文章： <a href="http://developer.android.com/tools/debugging/debugging-memory.html#ViewingAllocations" target="_blank" rel="noopener">Investigating Your RAM Usage</a>.</li>
+<li>Android系统不会紧凑的压缩堆的逻辑大小。它仅仅在堆的末端有空闲空间时候才会主动减少堆内存的大小。但是这并意味着说堆内存不会被收缩。在垃圾回收之后，Dalvik会遍历heap并找出不使用的pages，然后使用madvise(系统调用)把那些pages返回给kernal。因此，成对的allocations与deallocations大块的数据可以使得物理内存能够被正常的回收。然而，回收碎片化的内存则会使得效率低下很多，因为那些碎片化的分配页面也许会被其他地方所共享到。</li>
+</ul>
+<h4 id="4-限制应用内存"><a href="#4-限制应用内存" class="headerlink" title="4.限制应用内存"></a>4.限制应用内存</h4><p>为了维持一个多任务功能的系统环境，Android系统给每个应用规定了一个硬性的堆内存（head size）大小，这个大小的值是跟使用的设备内存大小有关的，如果你应用已经达到了head size的最大容量，继续尝试分配内存应用将会出现<a href="http://developer.android.com/reference/java/lang/OutOfMemoryError.html" target="_blank" rel="noopener">OutOfMemoryError</a>错误.<br>在某些情况下，你可能需要查询当前设备具体的堆内存大小，例如，你需要确定设置缓存的大小。你可以使用getMemoryClass()方法来查询，这个方法能够得到一个最大限制的head size的整数值。文章<a href="http://developer.android.com/intl/zh-cn/training/articles/memory.html#CheckHowMuchMemory" target="_blank" rel="noopener">Check how much memory you should use</a>有更加详细的讨论。</p>
+<h4 id="5-切换Apps"><a href="#5-切换Apps" class="headerlink" title="5.切换Apps"></a>5.切换Apps</h4><p>Android在切换应用的时候不会做交换内存的操作，Android会将不在foreground(“对用户可见”)的应用缓存到LRU中。例如，当用户启动一个应用的时候会创建一个应用进程，但是当用户离开这个应用的时候，这个进程不会被回收，它会缓存起来，当用户回到这个应用时候，该进程能够被快速的恢复。<br>如果你的应用进程被缓存起来，在这个缓存进程中有不需要保留的内存，那么你的应用将会占用一个用户没有使用的内存，这将会影响到系统的整体性能。所以，当系统的处于低内存的情况下，系统会更具LRU算法规则杀死一些进程来释放内存，为了保持你的进程能够长久的被缓存起来，接下里的建议和方法能够指导你合适释放一些引用。<br>对于那些不在foreground的进程，Android是如何决定kill掉哪一类进程的问题，更多信息请参考<a href="http://developer.android.com/guide/components/processes-and-threads.html" target="_blank" rel="noopener">Processes and Threads</a>.</p>
+<h4 id="6-怎样管理你应用的内存"><a href="#6-怎样管理你应用的内存" class="headerlink" title="6.怎样管理你应用的内存"></a>6.怎样管理你应用的内存</h4><p>在应当在开发阶段逐步的考虑内存的使用，包括在应用的设计阶段（在开发应用之前）。这里有许多的方式能够实现内存的高效使用。<br>你可以使用接下来的一些建议来开发你的应用，让应用能够更加高效的管理内存。</p>
+<h5 id="6-1-谨慎的使用services"><a href="#6-1-谨慎的使用services" class="headerlink" title="6.1 谨慎的使用services"></a>6.1 谨慎的使用services</h5><p>如果你应用需要使用service区执行一些后台的工作，除非当前任务需要执行，否则不要让它一直处于运行状态。同样需要注意当这个service已经完成任务后因为停止service失败而引起的泄漏。</p>
+<p>当service开始在后台运行的时候，系统会一直保存持有这个service的进程，这会让这个进程创建的代价非常大，因为，这个进程使用的内存将不会被回收。这会减少缓存应用的数量，让应用间的切换性能更低。它甚至会导致系统内存使用不稳定，从而无法继续保持住所有目前正在运行的Service。</p>
+<p>最好的方式是通过使用<a href="http://developer.android.com/reference/android/app/IntentService.html" target="_blank" rel="noopener">IntentService</a>来限制service的生命周期，它会在处理完给它的intent任务之后尽快结束自己。更多信息，请阅读<a href="http://developer.android.com/training/run-background-service/index.html" target="_blank" rel="noopener">Running in a Background Service</a>.<br>当一个Service已经不需要的时候还继续保留它，这对Android应用的内存管理来说是最糟糕的错误之一。所以不要贪心的想要保持service在后台不断运行。不仅将会引起应用由于内存限制产生的性能问题，而且可能引起用户由于常驻后台二卸载它。</p>
+<h5 id="6-2-UI隐藏时候释放内存"><a href="#6-2-UI隐藏时候释放内存" class="headerlink" title="6.2 UI隐藏时候释放内存"></a>6.2 UI隐藏时候释放内存</h5><p>当用户导航到其它的应用时候，你的UI不再被使用，你应当释放掉你UI使用的一些资源。释放UI资源能够显著的提高系统的内存容量，这对提升用户体验来说是非常重要的。<br>在Activity中通过重写<a href="http://developer.android.com/reference/android/content/ComponentCallbacks2.html#onTrimMemory%28int%29" target="_blank" rel="noopener">onTrimMemory()</a>方法来处理当用户退出UI时候资源的释放。你可以在这个方法制中通过监听<a href="http://developer.android.com/reference/android/content/ComponentCallbacks2.html#TRIM_MEMORY_UI_HIDDEN" target="_blank" rel="noopener">TRIM_MEMORY_UI_HIDDEN</a>回调，此时意味着你的UI已经隐藏，你应该释放那些仅仅被你的UI使用的资源。<br><strong>请注意：</strong>你的应用仅仅会在所有UI组件的被隐藏的时候接收到onTrimMemory()的回调并带有参数TRIM_MEMORY_UI_HIDDEN。这与onStop()的回调是不同的，onStop会在activity的实例隐藏时会执行，例如当用户从你的app的某个activity跳转到另外一个activity时onStop会被执行。因此你应该实现onStop回调，并且在此回调里面释放activity的资源，例如网络连接unregister广播接收者。除非接收onTrimMemory(TRIM_MEMORY_UI_HIDDEN))的回调，否者你不应该释放你的UI资源。这确保了用户从其他activity切回来时，你的UI资源仍然可用，并且可以迅速恢复activity。</p>
+<h5 id="6-3-在内存紧张的时候释放内存"><a href="#6-3-在内存紧张的时候释放内存" class="headerlink" title="6.3 在内存紧张的时候释放内存"></a>6.3 在内存紧张的时候释放内存</h5><p>在应用的生命周期中，方法<a href="http://developer.android.com/reference/android/content/ComponentCallbacks2.html#onTrimMemory%28int%29" target="_blank" rel="noopener">onTrimMemory()</a>回调能够告诉应用系统的内存紧张，你应当调用方法<a href="http://developer.android.com/reference/android/content/ComponentCallbacks2.html#onTrimMemory%28int%29" target="_blank" rel="noopener">onTrimMemory()</a>响应系统释放部分内存</p>
+<ul>
+<li><a href="http://developer.android.com/reference/android/content/ComponentCallbacks2.html#TRIM_MEMORY_RUNNING_MODERATE" target="_blank" rel="noopener">TRIM_MEMORY_RUNNING_MODERATE</a><br>你的app正在运行并且不会被列为可杀死的。但是设备此时正运行于低内存状态下，系统开始触发杀死LRU Cache中的Process的机制。</li>
+<li><a href="http://developer.android.com/reference/android/content/ComponentCallbacks2.html#TRIM_MEMORY_RUNNING_LOW" target="_blank" rel="noopener">TRIM_MEMORY_RUNNING_LOW</a><br>你的app正在运行且没有被列为可杀死的。但是设备正运行于更低内存的状态下，你应该释放不用的资源用来提升系统性能（但是这也会直接影响到你的app的性能）。</li>
+<li><a href="http://developer.android.com/reference/android/content/ComponentCallbacks2.html#TRIM_MEMORY_RUNNING_CRITICAL" target="_blank" rel="noopener">TRIM_MEMORY_RUNNING_CRITICAL</a><br>你的app仍在运行，但是系统已经把LRU Cache中的大多数进程都已经杀死，因此你应该立即释放所有非必须的资源。如果系统不能回收到足够的RAM数量，系统将会清除所有的LRU缓存中的进程，并且开始杀死那些之前被认为不应该杀死的进程，例如那个包含了一个运行态Service的进程。</li>
+</ul>
+<p>同样，当你的app进程正在被cached时，你可能会接受到从onTrimMemory()中返回的下面的值之一:</p>
+<ul>
+<li><a href="http://developer.android.com/reference/android/content/ComponentCallbacks2.html#TRIM_MEMORY_BACKGROUND" target="_blank" rel="noopener">TRIM_MEMORY_BACKGROUND:</a><br>系统正运行于低内存状态并且你的进程正处于LRU缓存名单中最不容易杀掉的位置。尽管你的app进程并不是处于被杀掉的高危险状态，系统可能已经开始杀掉LRU缓存中的其他进程了。你应该释放那些容易恢复的资源，以便于你的进程可以保留下来，这样当用户回退到你的app的时候才能够迅速恢复。</li>
+<li><a href="http://developer.android.com/reference/android/content/ComponentCallbacks2.html#TRIM_MEMORY_MODERATE" target="_blank" rel="noopener">TRIM_MEMORY_MODERATE</a><br>系统正运行于低内存状态并且你的进程已经已经接近LRU名单的中部位置。如果系统开始变得更加内存紧张，你的进程是有可能被杀死的。</li>
+<li><a href="http://developer.android.com/reference/android/content/ComponentCallbacks2.html#TRIM_MEMORY_COMPLETE" target="_blank" rel="noopener">TRIM_MEMORY_COMPLETE</a><br>系统正运行与低内存的状态并且你的进程正处于LRU名单中最容易被杀掉的位置。你应该释放任何不影响你的app恢复状态的资源。</li>
+</ul>
+<p>因为onTrimMemory()的回调是在API 14才被加进来的，对于老的版本，你可以使用onLowMemory)回调来进行兼容。onLowMemory相当与TRIM_MEMORY_COMPLETE。</p>
+<p><strong>Note:</strong> 当系统开始清除LRU缓存中的进程时，尽管它首先按照LRU的顺序来操作，但是它同样会考虑进程的内存使用量。因此消耗越少的进程则越容易被留下来。</p>
+<h5 id="6-4-检查你应当使用多少内存"><a href="#6-4-检查你应当使用多少内存" class="headerlink" title="6.4 检查你应当使用多少内存"></a>6.4 检查你应当使用多少内存</h5><p>前文提到，每一个Android设备对堆大小的限制是不一样的，你可以通过使用<a href="http://developer.android.com/reference/android/app/ActivityManager.html#getMemoryClass%28%29" target="_blank" rel="noopener">getMemoryClass()</a>方法来评估有效的堆大小限制。如果你应用达到最大的堆限制，继续申请分配就会造成OutOfMemoryError错误.<br>在一次额特殊的情况下你能够申请更大的堆内存空间（largeHeap）,你可以在&lt; application&gt; 标签中设置largeHead属性为”true”，你可以通过<a href="http://developer.android.com/reference/android/app/ActivityManager.html#getLargeMemoryClass%28%29" target="_blank" rel="noopener">getLargeMemoryClass()</a>方法来获取堆内存的大小。<br>然而，仅仅是少部分应用才需要申请更大的堆内存空间（例如编辑相片类的应用），<strong>绝对不要因为需要大的内存而尝试去申请大的堆空间</strong>，只有当你清楚的知道哪里会使用大量的内存并且为什么这些内存必须被保留时才去使用large heap， 因此请尽量少使用large heap。在任务切换时，系统的性能会变得大打折扣。</p>
+<p>另外, large heap并不一定能够获取到更大的heap。在某些有严格限制的机器上，large heap的大小和通常的heap size是一样的。因此即使你申请了large heap，你还是应该通过执行getMemoryClass()来检查实际获取到的heap大小。</p>
+<h5 id="6-5-使用bitmap时避免浪费内存"><a href="#6-5-使用bitmap时避免浪费内存" class="headerlink" title="6.5 使用bitmap时避免浪费内存"></a>6.5 使用bitmap时避免浪费内存</h5><p>当你需要加载bitmap，仅仅保留你需要的适配当前设备屏幕的分辨率数据即可，如果原图的分辨率太大你可以进行适当的缩放。记住，增加bitmap的尺寸会对内存出现2次方的增加，因为X与Y都在增加。</p>
+<blockquote>
+<p><strong>注意：</strong>在Android 2.3.x（API 10）及以下，无论bitmap的分辨率多大，bitmap对象的大小总是出现和你app head大小相同（这个pixdel date实际是存储在本地内存中的），这让它更加难以调试bitmap内存的大小，因为绝大多数的head分析工具看不到本地的内存分配。然而，从android3.0开始，bitmap pixel date是放在了Dalvik head中，提高了的垃圾回收和调试。所以应用如果在在Android 3.0以下的系统上面出现内存方面的问题，可以切换到3.0或者以上的系统来调试它。</p>
+</blockquote>
+<p>关于bitmap的使用，更多的Tips可以阅读：<a href="http://developer.android.com/training/displaying-bitmaps/manage-memory.html" target="_blank" rel="noopener">Managing Bitmap Memory</a></p>
+<h5 id="6-6-使用优化后的数据集合"><a href="#6-6-使用优化后的数据集合" class="headerlink" title="6.6 使用优化后的数据集合"></a>6.6 使用优化后的数据集合</h5><p>利用Android Framework里面优化过的容器类，例如 <a href="http://developer.android.com/reference/android/util/SparseArray.html" target="_blank" rel="noopener">SparseArray</a>、<a href="http://developer.android.com/reference/android/util/SparseBooleanArray.html" target="_blank" rel="noopener">SparseBooleanArray</a>、<a href="http://developer.android.com/reference/android/support/v4/util/LongSparseArray.html" target="_blank" rel="noopener">LongSparseArray</a>。通常的HashMap的实现方式更加消耗内存，因为它需要一个额外的实例对象来记录Mapping操作。SparseArray更加高效在于他们避免了对key与value的autobox自动装箱，并且避免了装箱后的解箱。</p>
+<h5 id="6-7-警惕内存开销"><a href="#6-7-警惕内存开销" class="headerlink" title="6.7 警惕内存开销"></a>6.7 警惕内存开销</h5><p>请务必了解你正在使用语言（ps:？）和libraries的开销,在应用设计开始直到完成开发阶段都需要谨记这些内存开销信息。在一些看起来似乎无害的东西可能会引起巨大的内存开销，例如：</p>
+<ul>
+<li>Enums的消耗是静态常量内存消耗的2倍，在Android中你应当避免使用enums</li>
+<li>在Java中每个类（包括匿名内部类）大约使用500字节的代码</li>
+<li>每个类的实例内存花销大概是 12-16字节</li>
+<li>往<a href="http://developer.android.com/reference/java/util/HashMap.html" target="_blank" rel="noopener">HashMap</a>添加一个实例需要额一个额外占用的32字节（看前面关于<a href="http://developer.android.com/intl/zh-cn/training/articles/memory.html#DataContainers" target="_blank" rel="noopener">优化数据结构</a>的章节）。<br>应用设计时候对象和类的不断增加会引起内存的快速增长，你需要通过不断分析堆内存查找到是那些地方使用了大量对象。</li>
+</ul>
+<h5 id="6-8-警惕代码抽象"><a href="#6-8-警惕代码抽象" class="headerlink" title="6.8 警惕代码抽象"></a>6.8 警惕代码抽象</h5><p>通常来说，开发者使用抽象作为“一个好的程编程实践”，因为使用抽象能够提高程序的灵活性和可维护性。可是，使用抽象会带来一个显著的开销：需要更多的代码去实现抽象并被执行，这会引起更多时间和内存资源的消耗。所以，如果抽象不能显著提升效率，你就应当尽量避免使用它。</p>
+<h5 id="6-9-为序列化数据使用nano-protobufs"><a href="#6-9-为序列化数据使用nano-protobufs" class="headerlink" title="6.9 为序列化数据使用nano protobufs"></a>6.9 为序列化数据使用nano protobufs</h5><p><a href="https://developers.google.com/protocol-buffers/docs/overview" target="_blank" rel="noopener">Protocol buffers</a> 是由Google为序列化结构数据而设计的，一种语言无关，平台无关，具有良好扩展性的协议。它类似于XML文件，但是它更小、更快速、更简单。如果你需要为你数据实现协议化，你应当在客户端中使用nano protobufs协议。通常的协议化操作会生成大量繁琐的代码，这容易给你的app带来许多问题：增加RAM的使用量，显著增加APK的大小，更慢的执行速度，更容易达到DEX的字符限制。<br>更多信息，你可以参考”Nano version”选择文章<a href="https://android.googlesource.com/platform/external/protobuf/+/master/java/README.txt" target="_blank" rel="noopener">protobuf readme</a>.</p>
+<h5 id="6-10-避免使用依赖注入框架"><a href="#6-10-避免使用依赖注入框架" class="headerlink" title="6.10 避免使用依赖注入框架"></a>6.10 避免使用依赖注入框架</h5><p>使用类似于Guice或者RoboGuice框架可能会引起你的关注，因为使用这些框架能够简化你的代码、更易测试和配置。可是，这些框架需要执行许多的进程来扫描你代码的注解，它会映射许多你可能并不需要的代码到内存区域。就算你离开这些内存区域，在很长一段时间Android都能不是使用它们。</p>
+<h5 id="6-11-小心的使用外部库"><a href="#6-11-小心的使用外部库" class="headerlink" title="6.11 小心的使用外部库"></a>6.11 小心的使用外部库</h5><p>很多的外部库（Exteranal library）不是为了移动环境而编写的，它在移动客户端使用效率不高。至少，当你决定使用某些外部库的时候，你应当假设需要你可能需要移植或者专门为移动环境作出一定的优化，在使用它们之前有计划的就代码和内存进行分析。<br>即使针对Android设计的外部库也有可能是危险的，因为每一个外部库做的事情是不一样的。例如，一些库使用nano protobufs而其它库使用了micro protobufs，使用它们你可能需要重写2个不同的协议类。这这样的冲突同样可能发生在输出日志，加载图片，缓存等等模块里面。因为依赖于你外部库所需要的功能甚至<a href="http://developer.android.com/tools/help/proguard.html" target="_blank" rel="noopener">ProGuard</a>不能正常的使用。当外部类某些功能使用反射的时候这个问题尤其突出（意味着你需要手段的调整ProGuard文件的内容）。<br>同样不要陷入为了1个或者2个功能而导入整个library的陷阱。如果没有一个合适的库与你的需求相吻合，你应该考虑自己去实现，而不是导入一个大而全的解决方案。</p>
+<h5 id="6-12-优化整体性能"><a href="#6-12-优化整体性能" class="headerlink" title="6.12 优化整体性能"></a>6.12 优化整体性能</h5><p><a href="http://developer.android.com/training/best-performance.html" target="_blank" rel="noopener">Best Practices for Performance</a>列表里有许多关于怎么优化应用的整体性能的文章，文档中有优化CPU性能方面的一些建议，也有许多关于优化内存的一些建议。例如，如何减少UI层布局的层数。<br>你也可以阅读<a href="http://developer.android.com/tools/debugging/debugging-ui.html" target="_blank" rel="noopener">optimizing your UI</a> 同样还应该关注<a href="http://developer.android.com/tools/debugging/improving-w-lint.html" target="_blank" rel="noopener">lint</a>工具所提出的建议，进行优化。</p>
+<h5 id="6-13-使用ProGuard剔除不需要的代码"><a href="#6-13-使用ProGuard剔除不需要的代码" class="headerlink" title="6.13 使用ProGuard剔除不需要的代码"></a>6.13 使用ProGuard剔除不需要的代码</h5><p><a href="http://developer.android.com/tools/help/proguard.html" target="_blank" rel="noopener">ProGuard</a>能够通过移除不需要的代码，重命名类，域与方法等方对代码进行压缩，优化与混淆。使用ProGuard可以是的你的代码更加紧凑，这样能够使用更少mapped代码所需要的RAM。</p>
+<h5 id="6-14-对APK文件使用Zipalign"><a href="#6-14-对APK文件使用Zipalign" class="headerlink" title="6.14 对APK文件使用Zipalign"></a>6.14 对APK文件使用Zipalign</h5><p>通过编译系统(包括使用证书对APK进行签名的)生成APK之后，你需要使用zipalign对APK进行重新校准。如果你不做这个步骤，会导致你的APK需要更多的RAM，因为一些类似图片资源的东西不能被mapped。（<strong>PS：可以在build文件中设置zipAlignEnabled：true 即可自动优化</strong>）</p>
+<blockquote>
+<p>注意: Google Play不接受没有经过zipalign的APK。</p>
+</blockquote>
+<h5 id="6-15-分析你的RAM使用情况"><a href="#6-15-分析你的RAM使用情况" class="headerlink" title="6.15 分析你的RAM使用情况"></a>6.15 分析你的RAM使用情况</h5><p>一旦你获取到一个相对稳定的版本后，需要分析你的app整个生命周期内使用的内存情况。关于怎样优化你的应用信息，更多细节请参考<a href="http://developer.android.com/tools/debugging/debugging-memory.html" target="_blank" rel="noopener">Investigating Your RAM Usage</a>.</p>
+<h5 id="6-16-使用多进程"><a href="#6-16-使用多进程" class="headerlink" title="6.16 使用多进程"></a>6.16 使用多进程</h5><p>如果合适的话，有一个更高级的技术能够帮助你管理应用的内存，那就是让你的应用分割成多个组件分别运行在多个进程中。使用这个技术应当特别小心，<strong>因为大部分的应用不应该运行在多个进程中</strong>，如果使用不当内存不但不能减少，相反还可能增长。当你的app需要在后台运行与前台一样的大量的任务的时候，可以考虑使用这个技术。<br>一个典型的例子是创建一个可以长时间后台播放的Music Player。如果整个app运行在一个进程中，当后台播放的时候，前台的那些UI资源也没有办法得到释放。类似这样的app可以切分成2个进程：一个用来操作UI，另外一个用来后台的Service.<br>你可以使用<a href="http://developer.android.com/guide/topics/manifest/service-element.html#proc" target="_blank" rel="noopener">android:process</a>标签属性来将应用分割成多个进程，例如，你能够传建一个名为“background”的新进程和应用的主进程区分开来：</p>
+<pre><code>&amp;lt;service 
+android:name=&quot;.PlaybackService&quot;
+android:process=&quot;:background&quot;/&amp;gt;
+`&lt;/pre&gt;
+
+你的进程名成可以使用“：”开头去确保这个进程是应用私有的。
+在决定创建一个新的进程之前，你需要明白新进程对内存的影响。为了说明每个进程的结果，使用一个不做任何事情的进程额外消耗大约1.4M，下面是关于内存的一些信息：
+
+adb shell dumpsys meminfo com.example.android.apis:empty
+
+&lt;pre&gt;`** MEMINFO in pid 10172 [com.example.android.apis:empty] **
+                Pss     Pss  Shared Private  Shared Private    Heap    Heap    Heap
+              Total   Clean   Dirty   Dirty   Clean   Clean    Size   Alloc    Free
+             ------  ------  ------  ------  ------  ------  ------  ------  ------
+  Native Heap     0       0       0       0       0       0    1864    1800      63
+  Dalvik Heap   764       0    5228     316       0       0    5584    5499      85
+ Dalvik Other   619       0    3784     448       0       0
+        Stack    28       0       8      28       0       0
+    Other dev     4       0      12       0       0       4
+     .so mmap   287       0    2840     212     972       0
+    .apk mmap    54       0       0       0     136       0
+    .dex mmap   250     148       0       0    3704     148
+   Other mmap     8       0       8       8      20       0
+      Unknown   403       0     600     380       0       0
+        TOTAL  2417     148   12480    1392    4832     152    7448    7299     148
+`&lt;/pre&gt;
+
+&gt; **注意：** 更多输出信息请阅读文章：Investigating Your RAM Usage[enter link description here](http://developer.android.com/tools/debugging/debugging-memory.html#ViewingAllocations)
+</code></pre><blockquote>
+<pre><code>这写数据是Private Dirty 和Private Clean 内存信息，显示这个内存消耗大概是1.4M（包括Dalvik heap ，本地分配，和额外库），并且有150K的内存代码被映射执行。
+当这个空进程开始工作的时候会显著的增长，例如，下面是一些内存信息，它仅仅是用来创建并显示一个Acitivity:
+</code></pre></blockquote>
+<pre><code>&lt;pre&gt;`** MEMINFO in pid 10226 [com.example.android.helloactivity] **
+                Pss     Pss  Shared Private  Shared Private    Heap    Heap    Heap
+              Total   Clean   Dirty   Dirty   Clean   Clean    Size   Alloc    Free
+             ------  ------  ------  ------  ------  ------  ------  ------  ------
+  Native Heap     0       0       0       0       0       0    3000    2951      48
+  Dalvik Heap  1074       0    4928     776       0       0    5744    5658      86
+ Dalvik Other   802       0    3612     664       0       0
+        Stack    28       0       8      28       0       0
+       Ashmem     6       0      16       0       0       0
+    Other dev   108       0      24     104       0       4
+     .so mmap  2166       0    2824    1828    3756       0
+    .apk mmap    48       0       0       0     632       0
+    .ttf mmap     3       0       0       0      24       0
+    .dex mmap   292       4       0       0    5672       4
+   Other mmap    10       0       8       8      68       0
+      Unknown   632       0     412     624       0       0
+        TOTAL  5169       4   11832    4032   10152       8    8744    8609     134
+</code></pre><p>通过进程让UI上面显示一些简单的文本操作内存消耗马上增长到了4M，接近增长了3倍。如果你的应用需要分割多个进程，为了不让进程消耗内存过快，应当让一个进程去操作UI，另外一个进程避免和UI打交到，在UI被绘制的时候是很难减少内存的消耗。<br>此外，当应用不只一个进程的时候，你应当尽量让你的代码精简，因为进程间公共的部分内存的操作会复制到其它进程中。例如，你使用枚举，内存区域会将这些常量复制到每个进程中，并且其它抽象的适配器同样会被复制。<br>与多进程相关的问题是进程之间的依赖性。例如，如果你的应用提供了content provider并且运行在默认的UI进程中，当背景进程访问这个content provider的时候也会访问UI并保留在内存区域中，如果你的目的是让这个背景进程独立于重量级的UI进程外，这个时候依然会在UI 进程中执行代码，从而引起内存的增长。</p>
+<h4 id="7-0-参考文章"><a href="#7-0-参考文章" class="headerlink" title="7.0 参考文章"></a>7.0 参考文章</h4><blockquote>
+<ul>
+<li><a href="http://developer.android.com/intl/zh-cn/training/articles/memory.html" target="_blank" rel="noopener">Managing Your App’s Memory</a></li>
+<li><a href="http://hukai.me/android-training-course-in-chinese/performance/memory.html" target="_blank" rel="noopener">管理应用内存</a> <a href="https://github.com/kesenhoo/android-training-course-in-chinese" target="_blank" rel="noopener">git地址</a></li>
+</ul>
+</blockquote>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/08/25/将Gradle项目发布到maven仓库/" rel="next" title="将Gradle项目发布到maven仓库">
+                <i class="fa fa-chevron-left"></i> 将Gradle项目发布到maven仓库
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/10/19/android-svg/" rel="prev" title="Android SVG初探">
+                Android SVG初探 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="uyan_frame"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="zhiwu_yan" />
+          <p class="site-author-name" itemprop="name">zhiwu_yan</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-android-是怎样管理内存的？"><span class="nav-number">1.</span> <span class="nav-text">1.android 是怎样管理内存的？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-共享内存"><span class="nav-number">2.</span> <span class="nav-text">2.共享内存</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-应用内存的分配和回收"><span class="nav-number">3.</span> <span class="nav-text">3.应用内存的分配和回收</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-限制应用内存"><span class="nav-number">4.</span> <span class="nav-text">4.限制应用内存</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-切换Apps"><span class="nav-number">5.</span> <span class="nav-text">5.切换Apps</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-怎样管理你应用的内存"><span class="nav-number">6.</span> <span class="nav-text">6.怎样管理你应用的内存</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#6-1-谨慎的使用services"><span class="nav-number">6.1.</span> <span class="nav-text">6.1 谨慎的使用services</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-2-UI隐藏时候释放内存"><span class="nav-number">6.2.</span> <span class="nav-text">6.2 UI隐藏时候释放内存</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-3-在内存紧张的时候释放内存"><span class="nav-number">6.3.</span> <span class="nav-text">6.3 在内存紧张的时候释放内存</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-4-检查你应当使用多少内存"><span class="nav-number">6.4.</span> <span class="nav-text">6.4 检查你应当使用多少内存</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-5-使用bitmap时避免浪费内存"><span class="nav-number">6.5.</span> <span class="nav-text">6.5 使用bitmap时避免浪费内存</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-6-使用优化后的数据集合"><span class="nav-number">6.6.</span> <span class="nav-text">6.6 使用优化后的数据集合</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-7-警惕内存开销"><span class="nav-number">6.7.</span> <span class="nav-text">6.7 警惕内存开销</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-8-警惕代码抽象"><span class="nav-number">6.8.</span> <span class="nav-text">6.8 警惕代码抽象</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-9-为序列化数据使用nano-protobufs"><span class="nav-number">6.9.</span> <span class="nav-text">6.9 为序列化数据使用nano protobufs</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-10-避免使用依赖注入框架"><span class="nav-number">6.10.</span> <span class="nav-text">6.10 避免使用依赖注入框架</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-11-小心的使用外部库"><span class="nav-number">6.11.</span> <span class="nav-text">6.11 小心的使用外部库</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-12-优化整体性能"><span class="nav-number">6.12.</span> <span class="nav-text">6.12 优化整体性能</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-13-使用ProGuard剔除不需要的代码"><span class="nav-number">6.13.</span> <span class="nav-text">6.13 使用ProGuard剔除不需要的代码</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-14-对APK文件使用Zipalign"><span class="nav-number">6.14.</span> <span class="nav-text">6.14 对APK文件使用Zipalign</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-15-分析你的RAM使用情况"><span class="nav-number">6.15.</span> <span class="nav-text">6.15 分析你的RAM使用情况</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-16-使用多进程"><span class="nav-number">6.16.</span> <span class="nav-text">6.16 使用多进程</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-0-参考文章"><span class="nav-number">7.</span> <span class="nav-text">7.0 参考文章</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhiwu_yan</span>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    
+
+    
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2133838"></script>
+      <!-- UY END -->
+    
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

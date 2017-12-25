@@ -1,0 +1,765 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,杂谈," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.png?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="人生苦短，须用Kotlin 就在昨天谷歌2017 IO大会宣布将Kotlin列为Android开发的一级语言，Android Studio 3.0也将在不使用插件的情况下自动兼容Kotlin语言。这也就意味着谷歌在专利流氓“甲骨文”公司的逼迫下有慢慢放弃使用Java的想法，当然，短期内想谷歌完全摒弃Java那是不可能，因为当前Android所有的开发生态基本都建立在Java语言之上，但是，某种意义">
+<meta name="keywords" content="Android,杂谈">
+<meta property="og:type" content="article">
+<meta property="og:title" content="人生苦短，须用Kotlin">
+<meta property="og:url" content="http://yoursite.com/2017/05/19/人生苦短，须用Kotlin/index.html">
+<meta property="og:site_name" content="秋山">
+<meta property="og:description" content="人生苦短，须用Kotlin 就在昨天谷歌2017 IO大会宣布将Kotlin列为Android开发的一级语言，Android Studio 3.0也将在不使用插件的情况下自动兼容Kotlin语言。这也就意味着谷歌在专利流氓“甲骨文”公司的逼迫下有慢慢放弃使用Java的想法，当然，短期内想谷歌完全摒弃Java那是不可能，因为当前Android所有的开发生态基本都建立在Java语言之上，但是，某种意义">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/kotlin_plugs.png">
+<meta property="og:image" content="http://yoursite.com/images/kotlin_convert.png">
+<meta property="og:image" content="http://yoursite.com/images/kotlin-not-configured.png">
+<meta property="og:updated_time" content="2017-12-25T15:51:29.303Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="人生苦短，须用Kotlin">
+<meta name="twitter:description" content="人生苦短，须用Kotlin 就在昨天谷歌2017 IO大会宣布将Kotlin列为Android开发的一级语言，Android Studio 3.0也将在不使用插件的情况下自动兼容Kotlin语言。这也就意味着谷歌在专利流氓“甲骨文”公司的逼迫下有慢慢放弃使用Java的想法，当然，短期内想谷歌完全摒弃Java那是不可能，因为当前Android所有的开发生态基本都建立在Java语言之上，但是，某种意义">
+<meta name="twitter:image" content="http://yoursite.com/images/kotlin_plugs.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/05/19/人生苦短，须用Kotlin/"/>
+
+
+
+
+
+  <title>人生苦短，须用Kotlin | 秋山</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=62198010";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">秋山</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">要么读书要么旅行，身体和灵魂必须有一个在路上</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/19/人生苦短，须用Kotlin/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhiwu_yan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="秋山">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">人生苦短，须用Kotlin</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-19T21:34:00+08:00">
+                2017-05-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/杂谈/" itemprop="url" rel="index">
+                    <span itemprop="name">杂谈</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/杂谈/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="人生苦短，须用Kotlin"><a href="#人生苦短，须用Kotlin" class="headerlink" title="人生苦短，须用Kotlin"></a>人生苦短，须用Kotlin</h2><p> 就在昨天谷歌2017 IO大会宣布将Kotlin列为Android开发的一级语言，Android Studio 3.0也将在不使用插件的情况下自动兼容Kotlin语言。这也就意味着谷歌在专利流氓“甲骨文”公司的逼迫下有慢慢放弃使用Java的想法，当然，短期内想谷歌完全摒弃Java那是不可能，因为当前Android所有的开发生态基本都建立在Java语言之上，但是，某种意义来说这是谷歌对后面Android开发的一种态度或者一种趋势。而且Kotlin本身是一个非常优秀的语言，其简洁的语法，无缝对接Java都是非常吸引人的。</p>
+<h3 id="什么是Kotlin"><a href="#什么是Kotlin" class="headerlink" title="什么是Kotlin?"></a>什么是Kotlin?</h3><p> Kotlin是一种在Java虚拟机上执行的静态类型语言，它是由JetBrains开发团队创造的，目前它能够支持在服务端、JavaScript、Android上使用，今天我们主要介绍它在Android上面的一些特性。</p>
+<p> Kotlin无缝对接Android开发</p>
+<ul>
+<li>兼容性：Kotlin能够运行在JDK6以上，意味它能够运行在更老的设备上面</li>
+<li>性  能：由于和Java具有相似的字节码结构，所以Kotlin语言和Java运行一样快，而且由于对内联函数和lambdas 表达式的支持，甚至有些时候比Java运行还要快</li>
+<li>大 小：Kotlin的Runtime lib非常小，小于100K。所以运行出来的APK文件和原生的差不多大</li>
+<li>编 译：对增量编译支持非常好，它和Java的增量编译一样快</li>
+<li>易用性：学习非常简单，和Java的语法很相近，但是写起来又更爽利。借用一些插件能够自动让Java和Kotlin语言自由装换，这也意味着当前项目的代码能够无缝切换到Kotlin了。</li>
+</ul>
+<p>它还有一些额外的优点，比如空安全（如果对象可以为null，必须显式声明），函数式编写等等。举个和简单的例子来证明Kotlin的易用和简洁性：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">data</span> <span class="class"><span class="keyword">class</span> <span class="title">Student</span></span>(</span><br><span class="line">        <span class="keyword">var</span> id: <span class="built_in">Long</span>,</span><br><span class="line">        <span class="keyword">var</span> name: String,</span><br><span class="line">        <span class="keyword">var</span> sex: String</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>这就已经新建了一个Student类，他会自动帮你建立好对各个属性的索引和基本方法.</p>
+<p>在Android中，使用Kotlin的扩展，能够提供一些额外的功能。比如你对一个view进行赋值，它是这样实现的：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">activity.hello_tv.setText(<span class="string">"hello world"</span>)</span><br></pre></td></tr></table></figure>
+<p>其中hello_tv就是你在xml布局中对应的id。</p>
+<h3 id="怎么在Android-Studio中使用？"><a href="#怎么在Android-Studio中使用？" class="headerlink" title="怎么在Android Studio中使用？"></a>怎么在Android Studio中使用？</h3><p>如果你使用的是Android Studio 3.0，你可以直接使用。如果使用的是Android Studio 3.0以下，可以通过引入插件和依赖包的形式。</p>
+<p>其它版本可以通过插件市场下载安装kotlin插件</p>
+<p><img src="/images/kotlin_plugs.png" alt="image"></p>
+<p>安装成功后重启Android Studio。</p>
+<p>这个时候按照正常的新建项目逻辑新建一个Android项目，自动生成MainActivity的java文件。在这个类中通过<strong>help - find action -输入 Covert java file to kotlin file</strong>点击，就可以发现当前的文件自动转换成kotlin类了。</p>
+<p><img src="/images/kotlin_convert.png" alt="image"></p>
+<p> 安装完插件后其实开发环境已经基本搭建成功。我们根据右上角的提示，增加对应的build配置信息</p>
+<p><img src="/images/kotlin-not-configured.png" alt="image"></p>
+<p> 在当前app的build文件中自动添加了</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">apply plugin: &apos;com.android.application&apos;</span><br><span class="line">apply plugin: &apos;kotlin-android&apos;</span><br><span class="line">...</span><br><span class="line">dependencies &#123;</span><br><span class="line">    ...</span><br><span class="line">    compile &quot;org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> 在当前项目的build 文件中自动添加了</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"> buildscript &#123;</span><br><span class="line">    ext.kotlin_version = &apos;1.1.2-4&apos;</span><br><span class="line">   ...</span><br><span class="line">    dependencies &#123;</span><br><span class="line">        ...</span><br><span class="line">        classpath &quot;org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version&quot;</span><br><span class="line">        ...</span><br><span class="line">     </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果你需要扩展功能，需要在app下面引入扩展插件功能</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apply plugin: &apos;kotlin-android-extensions&apos;</span><br></pre></td></tr></table></figure>
+<p>引入插件功能后意味着你能够使用扩展功能，具体有那些功能，可以参考<a href="http://kotlinlang.org/docs/tutorials/android-plugin.html" target="_blank" rel="noopener">官方文档</a>。</p>
+<p>接下来你就可以开心使用Android Studio撸代码啦。</p>
+<h3 id="怎么学习Kotlin"><a href="#怎么学习Kotlin" class="headerlink" title="怎么学习Kotlin?"></a>怎么学习Kotlin?</h3><p>由于Kotlin的语法和Java及其相像的，所以如果你有Java基础，学习起来应该是非常容易的。而且Kotlin也有一些开源社区提供的<a href="https://www.kotlincn.net/" target="_blank" rel="noopener">中文同步网站</a>，如果你英文不错建议直接看<a href="https://kotlinlang.org/docs/reference/basic-syntax.html" target="_blank" rel="noopener">英文原版本文档</a>，总的来说上手还是非常容易的。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>作为一名程序员，时刻保持学习新的东西和动力和热情是非常重要的品质，谷歌有推广Android Studio的成功经验，而且无缝对接Java语言的巨大优势，会让很多Android开发人员切换更加容易，所以有理由相信Kotlin语言可能是Android 的未来。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/杂谈/" rel="tag"># 杂谈</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/17/迁移博客和博客搭建Hexo博客事宜/" rel="next" title="迁移博客和搭建Hexo博客事宜">
+                <i class="fa fa-chevron-left"></i> 迁移博客和搭建Hexo博客事宜
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/24/Kotlin的类和属性/" rel="prev" title="Kotlin的类和属性">
+                Kotlin的类和属性 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="uyan_frame"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="zhiwu_yan" />
+          <p class="site-author-name" itemprop="name">zhiwu_yan</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#人生苦短，须用Kotlin"><span class="nav-number">1.</span> <span class="nav-text">人生苦短，须用Kotlin</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是Kotlin"><span class="nav-number">1.1.</span> <span class="nav-text">什么是Kotlin?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#怎么在Android-Studio中使用？"><span class="nav-number">1.2.</span> <span class="nav-text">怎么在Android Studio中使用？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#怎么学习Kotlin"><span class="nav-number">1.3.</span> <span class="nav-text">怎么学习Kotlin?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">1.4.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhiwu_yan</span>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    
+
+    
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2133838"></script>
+      <!-- UY END -->
+    
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

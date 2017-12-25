@@ -1,0 +1,811 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Android,组件化,模块化," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.png?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="模块化和业务组件化在终端开发中常常会因为项目的复杂度越来越高，而需要不断对业务做划分和分组，在Android中称为模块化，模块化的意义在于不断对项目做业务和代码层面的分离，从而最终做到业务的隔离和代码的复用，这种思想在其它平台也有所体现，例如WEB的前后端分离。在Android中一般来说，最终模块后架构大体如下：  其中上层可以依赖下层，业务模块之前不能相互依赖。这样做的好处在于：  因为业务模块">
+<meta name="keywords" content="Android,组件化,模块化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于终端业务组件化的几点思考">
+<meta property="og:url" content="http://yoursite.com/2017/12/25/关于终端业务组件化的几点思考/index.html">
+<meta property="og:site_name" content="秋山">
+<meta property="og:description" content="模块化和业务组件化在终端开发中常常会因为项目的复杂度越来越高，而需要不断对业务做划分和分组，在Android中称为模块化，模块化的意义在于不断对项目做业务和代码层面的分离，从而最终做到业务的隔离和代码的复用，这种思想在其它平台也有所体现，例如WEB的前后端分离。在Android中一般来说，最终模块后架构大体如下：  其中上层可以依赖下层，业务模块之前不能相互依赖。这样做的好处在于：  因为业务模块">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/images/系统架构设计.png">
+<meta property="og:image" content="http://yoursite.com/images/业务组件化模型图.png">
+<meta property="og:updated_time" content="2017-12-25T15:51:29.305Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="关于终端业务组件化的几点思考">
+<meta name="twitter:description" content="模块化和业务组件化在终端开发中常常会因为项目的复杂度越来越高，而需要不断对业务做划分和分组，在Android中称为模块化，模块化的意义在于不断对项目做业务和代码层面的分离，从而最终做到业务的隔离和代码的复用，这种思想在其它平台也有所体现，例如WEB的前后端分离。在Android中一般来说，最终模块后架构大体如下：  其中上层可以依赖下层，业务模块之前不能相互依赖。这样做的好处在于：  因为业务模块">
+<meta name="twitter:image" content="http://yoursite.com/images/系统架构设计.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/12/25/关于终端业务组件化的几点思考/"/>
+
+
+
+
+
+  <title>关于终端业务组件化的几点思考 | 秋山</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=62198010";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">秋山</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">要么读书要么旅行，身体和灵魂必须有一个在路上</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/25/关于终端业务组件化的几点思考/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhiwu_yan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="秋山">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">关于终端业务组件化的几点思考</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-25T23:01:00+08:00">
+                2017-12-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/组件化/" itemprop="url" rel="index">
+                    <span itemprop="name">组件化</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/组件化/模块化/" itemprop="url" rel="index">
+                    <span itemprop="name">模块化</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="模块化和业务组件化"><a href="#模块化和业务组件化" class="headerlink" title="模块化和业务组件化"></a>模块化和业务组件化</h3><p>在终端开发中常常会因为项目的复杂度越来越高，而需要不断对业务做划分和分组，在Android中称为<strong>模块化</strong>，模块化的意义在于不断对项目做业务和代码层面的分离，从而最终做到业务的隔离和代码的复用，这种思想在其它平台也有所体现，例如WEB的前后端分离。在Android中一般来说，最终模块后架构大体如下：</p>
+<p><img src="/images/系统架构设计.png" alt="image"></p>
+<p>其中上层可以依赖下层，业务模块之前不能相互依赖。这样做的好处在于：</p>
+<ul>
+<li>因为业务模块不能依赖，所以业务之间理论上是隔离的，每一个业务只需要少部分人维护即可。</li>
+<li>新人上手容易，只需要理解当前业务模块即可。</li>
+<li>出现问题可控，修改代码只会影响当前模块。</li>
+<li>对于大型APP来说，多个部门的APP代码可以分成多个git库管理，各个部门单独管理自己的代码，在打包的时候合并在一起即可。</li>
+</ul>
+<p>当然，模块化的构建过程中会遇到一些问题，个人在实践过程中，遇到的最大的两个问题：</p>
+<ul>
+<li>业务的划分。这是非技术问题，如何对业务做精准的划分，这涉及到产品层面和公司战略层面了。总而言之，模块化构建应当是服务于公司业务和部门业务的。</li>
+<li>模块之间如何通信。虽然做了业务上的划分，但是无论无何也会存在业务模块之间进行相互耦合的情况，比如隶属于账户模块的授权系统可能会被其它模块所调用，并且返回数据。</li>
+</ul>
+<p>第一个问题属于业务问题，需要项目负责人根据公司现状去做决策。第二问题在业界其实都有比较好的解决办法，模块化实践最好的莫过于微信了，<a href="https://mp.weixin.qq.com/s?__biz=MzAwNDY1ODY2OQ==&amp;mid=2649286672&amp;idx=1&amp;sn=4d9db00c496fcafd1d3e01d69af083f9" target="_blank" rel="noopener">微信Android模块化架构重构实践</a>这篇文章对于第二个问题有自己的解决办法（lib的方式）。对于部门隔离要求不那么严格项目来说，<a href="http://blog.spinytech.com/2016/12/28/android_modularization/" target="_blank" rel="noopener">这个解决方案</a>也不失为一种好的方式。</p>
+<p>上面聊的都是模块化，业务组件化其实是属于模块化的一种细分，模<strong>块化是从大的业务层级来进行梳理和代码隔离的，而业务组件化注重的是UI层面的组件化</strong>，但是又比UI组件更加粗粒度，业务组件化就像是搭积木，积木就是这个组件。可以想象也一个页面由产品列表、购买按钮组成，其中，产品列表和购买按钮就是一个组件，购买按钮不仅仅是一个按钮，它包含整个购买逻辑：</p>
+<ul>
+<li>购买产品信息的输入和结算</li>
+<li>购买流程的处理</li>
+<li>数据的返回和异常情况的处理</li>
+</ul>
+<p>本质上来看，对于终端来说，所谓的业务组件化<strong>其实就是一个绑定了特定业务的UI组件，这个UI组件可以针对很多类似场景进行数据的输入和输出，并处理特定的业务。</strong></p>
+<p>这样做优点是显而易见的</p>
+<ul>
+<li>通过预先定好的组件，开发工作量大量减少。</li>
+<li>可配置性强，甚至可以让服务端通过下发配置动态生成页面。</li>
+</ul>
+<h3 id="业务组件化的难点"><a href="#业务组件化的难点" class="headerlink" title="业务组件化的难点"></a>业务组件化的难点</h3><p>Android业务组件化在技术方面来讲，其实和其它项目组件化没有本质化的不同，其它组件化需要考虑到问题都需要考虑：</p>
+<ul>
+<li>多业务组件的管理，组件管理器。</li>
+<li>业务层的管理和定义，业务层。</li>
+<li>组件间的通信机制，通信层。</li>
+<li>基层UI组件的定义，UI层。</li>
+</ul>
+<p>根据上面思路，粗略画了一个图</p>
+<p><img src="/images/业务组件化模型图.png" alt="image"></p>
+<p>为了防止组件的耦合需要设计一个组件之间的通讯机制，这个通讯模块设计原理和模块化的通信类似。个人认为这种组件化设计其实是不难的，只需要在设计的时候考虑多复用和易用性即可。</p>
+<p>那么，业务组件化最难的是什么呢？</p>
+<p>个人认为业务组件化，到了编码阶段其实是不难的，真正难的是在于编码之前的阶段：</p>
+<h4 id="产品经理如何定义业务组件？"><a href="#产品经理如何定义业务组件？" class="headerlink" title="产品经理如何定义业务组件？"></a><strong>产品经理如何定义业务组件？</strong></h4><h4 id="设计师如何规范统一风格业务组件？"><a href="#设计师如何规范统一风格业务组件？" class="headerlink" title="设计师如何规范统一风格业务组件？"></a><strong>设计师如何规范统一风格业务组件？</strong></h4><p>这两个问题，考验的是整个项目的的统一协调能力，考验的是整个项目的规划性和整个公司战略方向。</p>
+<p>产品经理如何定义好一个业务组件？</p>
+<ul>
+<li>考虑这是一个业务组件吗？</li>
+<li>这个后期需要复用或者更改吗？</li>
+<li>需要预先定义好哪些可能的变化?</li>
+<li>整个项目类似的功能能够保持一致性吗？</li>
+</ul>
+<p>这些问题和技术无关，和产品思路和公司整体战略有关，非产品和技术负责人不能推动。</p>
+<p>设计师如何定义一套风格类似的组件？</p>
+<ul>
+<li>整个项目有标准的UI规范吗？</li>
+<li>如何让每个设计师能够设计出风格一致的设计？</li>
+<li>技术如何能够遵守这个设计规范，并形成通用型UI组件？</li>
+</ul>
+<p>考虑一个登陆授权组件，一般来说可能流程是这样的：</p>
+<p>用户点击页面上的某个登陆按钮-》按钮跳转到一个授权登陆页面-》用户输入授权信息-》根据用户的授权信息，通过服务器去验证-》返回授权结果。</p>
+<p>其中，设计师可能需要考虑：</p>
+<ul>
+<li>登陆授权按钮风格是否是固定的，是否需要排除到业务组件外面？</li>
+<li>授权页面是否整个项目公用？设计风格是否不同页面会发生变化？</li>
+<li>在整个组件进行过程中，异常情况如何提示给用户？如何做出风格一致的反馈和设计？</li>
+</ul>
+<p>产品经理考虑可能：</p>
+<ul>
+<li>这个授权系统是否需要产品复用？</li>
+<li>不同用户类型授权方式是否需要预先留好接口？</li>
+<li>统一的风格是否符合产品意图？</li>
+<li>异常情况下如何处理？</li>
+</ul>
+<p>整个过程如果没有沟通清楚就会导致整个业务组件的定义失败。登陆授权还是简单的业务，如果遇到类似于支付宝这种复杂业务的产品，就需要在开发产品前考虑到这些问题。</p>
+<p>从技术层面来说，越早定义好业务组件，实现就越简单，在业务还没有铺开、代码复杂度越低的时候实现就越简单。因此，业务组件化应当是一个持续的过程，特别是对于一个快速迭代的项目来说，业务组件化应当贯穿整个产品的所有开发过程。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>业务组件化非常难以推行，往往不是因为技术方面的问题，大都是因为产品层面导致的。当然，一个有权威、了解产品负责人进行业务组件化跨部门推进也是非常关键的，因此，如果你想推行业务组件化，那就先从产品层面梳理项目，并选一个靠谱、有权威的负责人来推进吧！</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+            <a href="/tags/组件化/" rel="tag"># 组件化</a>
+          
+            <a href="/tags/模块化/" rel="tag"># 模块化</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/15/谈谈Android中的MVP/" rel="next" title="谈谈Android中的MVP">
+                <i class="fa fa-chevron-left"></i> 谈谈Android中的MVP
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="uyan_frame"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="zhiwu_yan" />
+          <p class="site-author-name" itemprop="name">zhiwu_yan</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#模块化和业务组件化"><span class="nav-number">1.</span> <span class="nav-text">模块化和业务组件化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#业务组件化的难点"><span class="nav-number">2.</span> <span class="nav-text">业务组件化的难点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#产品经理如何定义业务组件？"><span class="nav-number">2.1.</span> <span class="nav-text">产品经理如何定义业务组件？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#设计师如何规范统一风格业务组件？"><span class="nav-number">2.2.</span> <span class="nav-text">设计师如何规范统一风格业务组件？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhiwu_yan</span>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    
+
+    
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2133838"></script>
+      <!-- UY END -->
+    
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

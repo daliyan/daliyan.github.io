@@ -1,0 +1,794 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Kotlin,Android," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.png?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="类声明类的声明和Java是非常相近的，一般的类声明是这样的 12class Invoice &amp;#123;&amp;#125; 如果没有任何的类体，则可以省略花括号。 构造函数构造函数和Java有很多不同的地方，Java允许同一个类中存在多个同级别的构造函数，kotlin中则把构造函数分成主构造函数和次构造函数。其中主构造函数直接声明在类体后面， 123class Person constructor(fi">
+<meta name="keywords" content="Kotlin,Android">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kotlin的类和属性">
+<meta property="og:url" content="http://yoursite.com/2017/05/24/Kotlin的类和属性/index.html">
+<meta property="og:site_name" content="秋山">
+<meta property="og:description" content="类声明类的声明和Java是非常相近的，一般的类声明是这样的 12class Invoice &amp;#123;&amp;#125; 如果没有任何的类体，则可以省略花括号。 构造函数构造函数和Java有很多不同的地方，Java允许同一个类中存在多个同级别的构造函数，kotlin中则把构造函数分成主构造函数和次构造函数。其中主构造函数直接声明在类体后面， 123class Person constructor(fi">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-12-25T15:51:29.292Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kotlin的类和属性">
+<meta name="twitter:description" content="类声明类的声明和Java是非常相近的，一般的类声明是这样的 12class Invoice &amp;#123;&amp;#125; 如果没有任何的类体，则可以省略花括号。 构造函数构造函数和Java有很多不同的地方，Java允许同一个类中存在多个同级别的构造函数，kotlin中则把构造函数分成主构造函数和次构造函数。其中主构造函数直接声明在类体后面， 123class Person constructor(fi">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/05/24/Kotlin的类和属性/"/>
+
+
+
+
+
+  <title>Kotlin的类和属性 | 秋山</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=62198010";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">秋山</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">要么读书要么旅行，身体和灵魂必须有一个在路上</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/05/24/Kotlin的类和属性/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhiwu_yan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="秋山">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Kotlin的类和属性</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-24T22:42:00+08:00">
+                2017-05-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/类和属性/" itemprop="url" rel="index">
+                    <span itemprop="name">类和属性</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/类和属性/Kotlin/" itemprop="url" rel="index">
+                    <span itemprop="name">Kotlin</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="类声明"><a href="#类声明" class="headerlink" title="类声明"></a>类声明</h2><p>类的声明和Java是非常相近的，一般的类声明是这样的</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Invoice</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果没有任何的类体，则可以省略花括号。</p>
+<h3 id="构造函数"><a href="#构造函数" class="headerlink" title="构造函数"></a>构造函数</h3><p>构造函数和Java有很多不同的地方，Java允许同一个类中存在多个同级别的构造函数，<strong>kotlin中则把构造函数分成主构造函数和次构造函数</strong>。其中主构造函数直接声明在类体后面，</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span> <span class="keyword">constructor</span></span>(firstName: String) &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>简化写法：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span></span>(firstName: String) &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>主构造函数中不能包含代码，<strong>如果你需要在主构造函数中添加代码，可以使用初始化init方法来替代</strong>：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">init &#123;</span><br><span class="line">       <span class="comment">// 可以看成是主构造函数的实现方法</span></span><br><span class="line">       <span class="keyword">val</span> customerKey = name.toUpperCase()</span><br><span class="line">       print(customerKey)</span><br><span class="line">       <span class="keyword">this</span>.name = name</span><br><span class="line">       s = <span class="number">6</span></span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>如果有多个构造函数，则需要添加次构造函数：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Person</span></span>(<span class="keyword">val</span> name: String) &#123;</span><br><span class="line">    <span class="keyword">constructor</span>(name: String, parent: Person) : <span class="keyword">this</span>(name) &#123;</span><br><span class="line">        parent.children.add(<span class="keyword">this</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h3><p>每一个类都有一个子类Any(就像Java中的Object),如果需要继承其它类，则使用“:”<br>例如自定义View：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">open</span> <span class="class"><span class="keyword">class</span> <span class="title">MyView</span> : <span class="type">View &#123;</span></span></span><br><span class="line">    <span class="keyword">constructor</span>(ctx: Context) : <span class="keyword">super</span>(ctx)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">constructor</span>(ctx: Context, attrs: AttributeSet) : <span class="keyword">super</span>(ctx, attrs)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中，<strong>open字段表示允许其它类继承它</strong>。</p>
+<p><strong>子类如果想要覆盖父类的方法或者属性，则必须声明override</strong></p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">open</span> <span class="class"><span class="keyword">class</span> <span class="title">Base</span> </span>&#123;</span><br><span class="line">    <span class="keyword">open</span> <span class="function"><span class="keyword">fun</span> <span class="title">v</span><span class="params">()</span></span> &#123;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">nv</span><span class="params">()</span></span> &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Derived</span></span>() : Base() &#123;</span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">v</span><span class="params">()</span></span> &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>如果存在主构造函数，次构造函数必须委托给主构造函数</strong>，如例子中的this(name)</p>
+<h3 id="抽象类"><a href="#抽象类" class="headerlink" title="抽象类"></a>抽象类</h3><p>抽象类的声明和Java一样的</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Derived</span> : <span class="type">Base</span></span>() &#123;</span><br><span class="line">    <span class="keyword">override</span> <span class="keyword">abstract</span> <span class="function"><span class="keyword">fun</span> <span class="title">f</span><span class="params">()</span></span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="伴生对象"><a href="#伴生对象" class="headerlink" title="伴生对象"></a>伴生对象</h3><p>伴生对象可以理解成Java的内部类，类内部的对象声明可以用 companion 关键字标记：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span> </span>&#123;</span><br><span class="line">    <span class="keyword">companion</span> <span class="keyword">object</span> Factory &#123;</span><br><span class="line">        <span class="function"><span class="keyword">fun</span> <span class="title">create</span><span class="params">()</span></span>: MyClass = MyClass()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="属性的声明"><a href="#属性的声明" class="headerlink" title="属性的声明"></a>属性的声明</h2><p>声明一个属性的定义：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var &lt;属性名称&gt;[: &lt;属性类型&gt;] [= &lt;初始值&gt;]</span><br><span class="line">    [&lt;get&gt;]</span><br><span class="line">    [&lt;set&gt;]</span><br></pre></td></tr></table></figure>
+<p>需要注意几点：</p>
+<ul>
+<li>初始值、get、set方法都是可选的，如果，数据类型可以通过初始器或者get set方法推断出来，则可以省略。</li>
+<li>常量用val表示只读属性，变量用var表示可变属性</li>
+<li>如果需要改变一个访问器的可见性或者对其注解，但是不需要改变默认的实现，你可以定义访问器而不定义其实现。(<strong>Get属性肯定是需要可见的，想想为什么？</strong>)</li>
+</ul>
+<h2 id="get-和-set-方法"><a href="#get-和-set-方法" class="headerlink" title="get 和 set 方法"></a>get 和 set 方法</h2><h3 id="两种写法"><a href="#两种写法" class="headerlink" title="两种写法"></a>两种写法</h3><p>get和set写法上有2种，一种是完全写法，一种是简略写法，如下：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">var</span> age: <span class="built_in">Int</span> = <span class="number">2</span> <span class="comment">// 具有field字段才允许进行初始化</span></span><br><span class="line"><span class="keyword">get</span>() &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">3</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">set</span>(value) &#123;</span><br><span class="line">    field = value</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其中get方法也可以省略成：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">get() = 3</span><br></pre></td></tr></table></figure>
+<p>但是，为了代码的一致性，推荐使用第一种写法。<br>其实，get方法还省略了方法的返回值类型，因为根据返回值可以自动推断出返回类型，所以可以省略掉。</p>
+<p>在一些情况下，你可能希望set方法不给外部访问，这个时候你可以声明set方法位不可见,在set方法前面添加private关键字</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">set</span>(value) &#123;</span><br><span class="line">    field = value</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="backing字段"><a href="#backing字段" class="headerlink" title="backing字段"></a>backing字段</h3><p><strong>kotlin语言种，类的属性是不允许外部直接访问的</strong>，但是，我们在使用的时候往往是这样的：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">testStudent</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">var</span> stu = Student(<span class="string">"1111"</span>,<span class="number">5</span>)</span><br><span class="line">        <span class="keyword">this</span>.test_result_tv.text = <span class="string">""</span> + stu.age + <span class="string">"name:"</span> + stu.name</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>其中，直接使用了stu.age 和 stu.name，说好的不能直接访问呢？<br>假设，按照Java的写法，我们在get方法种直接这样写：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">get() &#123;</span><br><span class="line">        return 3</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>我们执行testStudent()方法，发现输出的值为 3。<strong>因此使用xx.属性的写法，其本质还是调用了get方法，只不过是kotlin的一种简化写法。</strong><br>如果我们把get方法修改如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">get() &#123;</span><br><span class="line">        return age</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>同样执行上面的测试类，这个时候你会发现抛出了StackOverFlowError的错误，因为就算在类内部直接访问属性，其实也是访问get方法，所以这种写法其实是错误的。</p>
+<p>那么有什么办法可以做到像Java一样直接返回字段当前的值呢？</p>
+<p><strong>在kotlin种定义了一种被称之为backing属性的字段，我把它翻译成影子字</strong>段，按照我的理解，其实是当前属性真正的赋值字段，所以你可以这么写：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> age: <span class="built_in">Int</span> = <span class="number">2</span> <span class="comment">// 具有field字段才允许进行初始化</span></span><br><span class="line"><span class="keyword">get</span>() &#123;</span><br><span class="line">    <span class="keyword">return</span> field</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">set</span>(value) &#123;</span><br><span class="line">    field = value</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>再次执行上面的测试方法，就不会报错了。</p>
+<h2 id="编译期常量"><a href="#编译期常量" class="headerlink" title="编译期常量"></a>编译期常量</h2><p>编译期常量和Java中的静态常量是非常相像的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String EXTRA_URL = <span class="string">"extra_url"</span>;</span><br></pre></td></tr></table></figure>
+<p>而在kotlin中，编译期常量的写法：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">const <span class="keyword">val</span> EXTRA_URL: String = <span class="string">"extra_url"</span></span><br></pre></td></tr></table></figure>
+<p>编译期常量需要满足以下几个条件：</p>
+<ul>
+<li>位于顶层或者是 object(后面再讲) 的一个成员</li>
+<li>用 String 或原生类型 值初始化</li>
+<li>没有自定义 getter</li>
+</ul>
+<h2 id="类外属性"><a href="#类外属性" class="headerlink" title="类外属性"></a>类外属性</h2><p>顾名思义，类外属性是位于类外面的一种属性，它主要包括两种类型：</p>
+<ul>
+<li>写在类外并初始化的包级属性</li>
+<li>编译期常量</li>
+</ul>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">const <span class="keyword">val</span> SEX_MALE : <span class="built_in">Int</span> = <span class="number">0</span></span><br><span class="line">const <span class="keyword">val</span> SEX_FEMALE : <span class="built_in">Int</span> = <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">var</span> grade : String = <span class="string">""</span></span><br><span class="line"><span class="comment">// 先定义名称，再定义类型的规律</span></span><br><span class="line"><span class="keyword">open</span> <span class="class"><span class="keyword">class</span> <span class="title">Student</span></span>(name : String) &#123;</span><br><span class="line">...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>类外属性，默认是全局可访问的，可以在其它类中直接访问。</p>
+<h2 id="lateinit属性"><a href="#lateinit属性" class="headerlink" title="lateinit属性"></a>lateinit属性</h2><p>虽然，kotlin要求我们必须初始化变量，但是再一些特殊情况下，我们想先不初始化，后面再进行赋值，例如，外部注入初始化。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyTest</span> </span>&#123;</span><br><span class="line">    <span class="keyword">lateinit</span> <span class="keyword">var</span> helloWorld: String</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">sayHello</span><span class="params">(helloWord: <span class="type">String</span>)</span></span> &#123;</span><br><span class="line">        <span class="keyword">this</span>.helloWorld = helloWorld</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样就实现了延迟初始化属性值。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文主要讲了类的定义个属性值定义个使用，kotlin的类和属性和Java还是有很多不同的，特别是对象的访问和初始化这一块，需要细细体会，在实战中多使用</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Kotlin/" rel="tag"># Kotlin</a>
+          
+            <a href="/tags/Android/" rel="tag"># Android</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/19/人生苦短，须用Kotlin/" rel="next" title="人生苦短，须用Kotlin">
+                <i class="fa fa-chevron-left"></i> 人生苦短，须用Kotlin
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/17/价值观和自控/" rel="prev" title="价值观和自控">
+                价值观和自控 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="uyan_frame"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="zhiwu_yan" />
+          <p class="site-author-name" itemprop="name">zhiwu_yan</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#类声明"><span class="nav-number">1.</span> <span class="nav-text">类声明</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#构造函数"><span class="nav-number">1.1.</span> <span class="nav-text">构造函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#继承"><span class="nav-number">1.2.</span> <span class="nav-text">继承</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#抽象类"><span class="nav-number">1.3.</span> <span class="nav-text">抽象类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#伴生对象"><span class="nav-number">1.4.</span> <span class="nav-text">伴生对象</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#属性的声明"><span class="nav-number">2.</span> <span class="nav-text">属性的声明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#get-和-set-方法"><span class="nav-number">3.</span> <span class="nav-text">get 和 set 方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#两种写法"><span class="nav-number">3.1.</span> <span class="nav-text">两种写法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#backing字段"><span class="nav-number">3.2.</span> <span class="nav-text">backing字段</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编译期常量"><span class="nav-number">4.</span> <span class="nav-text">编译期常量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#类外属性"><span class="nav-number">5.</span> <span class="nav-text">类外属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lateinit属性"><span class="nav-number">6.</span> <span class="nav-text">lateinit属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhiwu_yan</span>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    
+
+    
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2133838"></script>
+      <!-- UY END -->
+    
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

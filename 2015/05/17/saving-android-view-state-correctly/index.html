@@ -1,0 +1,951 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.png?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="原文地址：http://trickyandroid.com/saving-android-view-state-correctly/ Today we will talk about saving and restoring View states in Android. I intentionally want to keep our focus on Android Views state j">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Saving Android View state correctly">
+<meta property="og:url" content="http://yoursite.com/2015/05/17/saving-android-view-state-correctly/index.html">
+<meta property="og:site_name" content="秋山">
+<meta property="og:description" content="原文地址：http://trickyandroid.com/saving-android-view-state-correctly/ Today we will talk about saving and restoring View states in Android. I intentionally want to keep our focus on Android Views state j">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://trickyandroid.com/content/images/2014/10/settings.jpg">
+<meta property="og:image" content="http://trickyandroid.com/content/images/2014/11/Screen-Shot-2014-11-02-at-12-22-46-PM.png">
+<meta property="og:image" content="http://trickyandroid.com/content/images/2014/11/Screen-Shot-2014-11-02-at-12-24-50-PM.png">
+<meta property="og:image" content="http://trickyandroid.com/content/images/2014/11/Screen-Shot-2014-11-02-at-12-25-33-PM.png">
+<meta property="og:image" content="http://trickyandroid.com/content/images/2014/11/Screen-Shot-2014-11-02-at-12-26-19-PM.png">
+<meta property="og:image" content="http://trickyandroid.com/content/images/2014/11/Screen-Shot-2014-11-02-at-12-27-12-PM.png">
+<meta property="og:updated_time" content="2017-12-25T15:51:29.303Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Saving Android View state correctly">
+<meta name="twitter:description" content="原文地址：http://trickyandroid.com/saving-android-view-state-correctly/ Today we will talk about saving and restoring View states in Android. I intentionally want to keep our focus on Android Views state j">
+<meta name="twitter:image" content="http://trickyandroid.com/content/images/2014/10/settings.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2015/05/17/saving-android-view-state-correctly/"/>
+
+
+
+
+
+  <title>Saving Android View state correctly | 秋山</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=62198010";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">秋山</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">要么读书要么旅行，身体和灵魂必须有一个在路上</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/05/17/saving-android-view-state-correctly/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhiwu_yan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="秋山">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Saving Android View state correctly</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-05-17T10:05:45+08:00">
+                2015-05-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/android-share/" itemprop="url" rel="index">
+                    <span itemprop="name">android share</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>原文地址：<a href="http://trickyandroid.com/saving-android-view-state-correctly/" target="_blank" rel="noopener">http://trickyandroid.com/saving-android-view-state-correctly/</a></p>
+<p>Today we will talk about saving and restoring View states in Android. I intentionally want to keep our focus on Android <strong>Views</strong> state just because I found this process just a little bit trickier than saving your <code>Activity</code> or <code>Fragment</code> state. Plus I think I’ve seen enough of re-invented wheels (sometimes really ugly ones) throughout the internet.</p>
+<h3 id="Why-do-we-need-to-save-View-state"><a href="#Why-do-we-need-to-save-View-state" class="headerlink" title="Why do we need to save View state?"></a>Why do we need to save View state?</h3><p>Very good question! I have very strong belief that mobile application should help you solve existing problems, not add new ones.<br>Imagine a very complicated settings page:<br><img src="http://trickyandroid.com/content/images/2014/10/settings.jpg" alt="Page">This sample is not really a mobile device screenshot, but good for illustration purposes :)<br>You have a lot of text fields, checkboxes, switches, etc. And you spent ~15 minutes trying to fill in all these fields. You almost there - almost hit that shiny <em>“Done”</em> button, but accidentally you rotate the screen and… wait for it…. your changes <strong>gone</strong>. Everything is back to its original state.</p>
+<p>Sure, there is a subset of users who just love your app no matter what (your mom maybe) and will be happy to take another round completing your form. But let’s be honest to oureselves - it is the right path to be uninstalled right away (or even worse - mad croud of users with torches and pitchforks start ringing your doorbell).</p>
+<p>So let’s do the right thing and help our users! That’s right! We need to save user’s changes until user exlicitly asks us not to.</p>
+<h3 id="How-do-I-save-a-View-state"><a href="#How-do-I-save-a-View-state" class="headerlink" title="How do I save a View state?"></a>How do I save a View state?</h3><p>Let’s have a simple layout with image, text and 1 <code>Switch</code> toggle:</p>
+<pre>&lt;LinearLayout  
+    xmlns:android="[http://schemas.android.com/apk/res/android](http://schemas.android.com/apk/res/android)"
+    android:layout_width="match_parent"  
+    android:layout_height="match_parent"  
+    android:orientation="horizontal"  
+    android:padding="@dimen/activity_horizontal_margin"&gt;  
+    &lt;ImageView  
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"  
+        android:src="@drawable/ic_launcher"/&gt;  
+    &lt;TextView  
+        android:layout_width="0dip"
+        android:layout_weight="1"  
+        android:layout_height="wrap_content"  
+        android:text="My Text"/&gt;  
+    &lt;Switch  
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"  
+        android:layout_margin="8dip"/&gt;  
+&lt;/LinearLayout&gt;</pre>
+
+<p>Super simple layout as you can see. But now when I switch toggle and then change screen orientation - my toggle is back to its original state :(</p>
+<p>Android usually saves states of such views automatically. But why it didn’t work in our case?</p>
+<p>Let’s take a step back and try to figure out how does Android manage View states. Here is what the normal save/restore process looks like:<br><img src="http://trickyandroid.com/content/images/2014/11/Screen-Shot-2014-11-02-at-12-22-46-PM.png" alt=""></p>
+<ul>
+<li><code>saveHierarchyState(SparseArray&amp;lt;Parcelable&amp;gt; container)</code> - called by Android framework whenever state needs to be saved. Normally calls<code>dispatchSaveInstanceState()</code>.</li>
+<li><code>dispatchSaveInstanceState(SparseArray&amp;lt;Parcelable&amp;gt; container)</code> - called by<code>saveHierarchyState()</code>. Internally it calls <code>onSaveInstanceState()</code> and expects<code>Parcelable</code> to be returned as a representation of current state. This <code>Parcelable</code>is stored in <code>container</code> (see input param) - key-value map. <strong>View’s ID</strong> is taken as a key and <code>Parcelable</code> is taken as a value. Also if this is a <code>ViewGroup</code> - goes through its children and saves their state as well.</li>
+<li><code>Parcelable onSaveInstanceState()</code> - called by <code>dispatchSaveInstanceState()</code>. This method should be overridden by View’s implementation to return actual View state.</li>
+<li><code>restoreHierarchyState(SparseArray&amp;lt;Parcelable&amp;gt; container)</code> - called by Android whenever state needs to be restored. Again, as an input parameter we have a<code>SparseArray</code> which contains all the states saved during the <em>save</em> process.</li>
+<li><code>dispatchRestoreInstanceState(SparseArray&amp;lt;Parcelable&amp;gt; container)</code> - called by<code>restoreHierarchyState()</code>. Looks up Parcelable based on the View ID and passes it into <code>onRestoreInstanceState()</code>. If this is a <code>ViewGroup</code> - restores its children state as well.</li>
+<li><code>onRestoreInstanceState(Parcelable state)</code> - called by<code>dispatchRestoreInstanceState()</code>. State for this View ID is passed into this function if it is present in container.</li>
+</ul>
+<p>The really <strong>important</strong> part of understanding this process is that <code>container</code> is shared for the entire view hierarchy. We will see why it is so important in a bit.</p>
+<p>So now we know that since View’s state is saved based on it’s ID - <em>if View doesn’t have an ID - it’s state will not be saved into container</em>. There is no point of saving it - we will not be able to restore state anyways since we don’t know which View this state belongs to.</p>
+<p>Looks like that’s the reason why our toggle state is not saved! Let’s try to add an id to our toggle (and other views):</p>
+<pre>&lt;LinearLayout  
+    xmlns:android="[http://schemas.android.com/apk/res/android](http://schemas.android.com/apk/res/android)"
+    android:layout_width="match_parent"  
+    android:layout_height="match_parent"  
+    android:orientation="horizontal"  
+    android:padding="@dimen/activity_horizontal_margin"&gt;  
+    &lt;ImageView  
+        android:id="@+id/image"
+        android:layout_width="wrap_content"  
+        android:layout_height="wrap_content"  
+        android:src="@drawable/ic_launcher"/&gt;  
+    &lt;TextView  
+        android:id="@+id/text"
+        android:layout_width="0dip"  
+        android:layout_weight="1"  
+        android:layout_height="wrap_content"  
+        android:text="My Text"/&gt;  
+    &lt;Switch  
+        android:id="@+id/toggle"
+        android:layout_width="wrap_content"  
+        android:layout_height="wrap_content"  
+        android:layout_margin="8dip"/&gt;  
+&lt;/LinearLayout&gt;</pre>
+
+<p>And here we go! It actually works! My state is preserved between configuration changes. Here is what our <code>SparseArray</code> looks like:<br><img src="http://trickyandroid.com/content/images/2014/11/Screen-Shot-2014-11-02-at-12-24-50-PM.png" alt=""></p>
+<p>As you can see, each view which have an ID stores its state into <code>SparseArray</code>container.<br>You ask how did it happen - we didn’t actually provide any Parcelable as a state. And the answer is - Android took care of that. Android knows how to save state of it’s built-in widgets.</p>
+<p>In addition to ID, you should explicitly tell Android that your view wants to save its state. To do so - simply call <strong>setSaveEnabled(true)</strong>. You don’t usually need to do this for built-in widgets, but if you develop custom view from scratch - you might need to enable it manually.</p>
+<blockquote>
+<p>To save View state at least 2 criterias should be met:</p>
+<ul>
+<li>View should have an id</li>
+<li><strong>setSaveEnabled(true)</strong> should be called</li>
+</ul>
+</blockquote>
+<p>So now we know how to save state of built-in widgets. That’s awesome, but what if we have some custom state and we want to preserve this state between configuration changes?</p>
+<h3 id="Saving-custom-state"><a href="#Saving-custom-state" class="headerlink" title="Saving custom state"></a>Saving custom state</h3><p>Now let’s take a bit more complicated example. I want to extend my Switch and add my custom state to it:</p>
+<pre>public class CustomSwitch extends Switch {
+
+    private int customState;
+
+    .......
+
+    public void setCustomState(int customState) {
+        this.customState = customState;
+    }  
+}</pre>
+
+<p>Here is how I will be saving this state:</p>
+<pre>public class CustomSwitch extends Switch {
+
+    private int customState;
+
+    .............
+
+    public void setCustomState(int customState) {
+        this.customState = customState;
+    }
+
+    @Override
+    public Parcelable onSaveInstanceState() {
+        Parcelable superState = super.onSaveInstanceState();
+        SavedState ss = new SavedState(superState);  
+        ss.state = customState;  
+        return ss;  
+    }
+
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+        SavedState ss = (SavedState) state;
+        super.onRestoreInstanceState(ss.getSuperState());  
+        setCustomState(ss.state);  
+    }
+
+    static class SavedState extends BaseSavedState {
+        int state;
+
+        SavedState(Parcelable superState) {  
+            super(superState);
+        }
+
+        private SavedState(Parcel in) {
+            super(in);
+            state = in.readInt();  
+        }
+
+        @Override
+        public void writeToParcel(Parcel out, int flags) {
+            super.writeToParcel(out, flags);
+            out.writeInt(state);  
+        }
+
+        public static final Parcelable.Creator&lt;SavedState&gt; CREATOR
+                = new Parcelable.Creator&lt;SavedState&gt;() {
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }  
+        };
+    }  
+}</pre>
+
+<p>Let me explain what I just did.<br>First of all, since I override <code>onSaveInstanceState</code>, I have to call a supper method to let my super class save everything it wants to. In my case <code>Switch</code> will create a Parcelable, put state of the toggle and return it to me. Unfortunately, I cannot add some more states to this parcelable, so I need to create a wrapper around this super state and put my additional state to it. There is a handy class (<a href="https://developer.android.com/reference/android/view/View.BaseSavedState.html" target="_blank" rel="noopener"><code>View.BaseSavedState</code></a>) in Android that does just that - saves super state and allows you to save your custom attributes by extending it.</p>
+<p>During <code>onRestoreInstanceState()</code> we need to do the opposite - get super state from our special Parcelable and allow our super class to restore its state by calling<code>super.onRestoreInstanceState(ss.getSuperState())</code>. After that we can restore our own state.</p>
+<blockquote>
+<p>Since you override <code>onSaveInstanceState()</code> - always save super state - state of your super class.</p>
+</blockquote>
+<h3 id="View-IDs-should-be-unique"><a href="#View-IDs-should-be-unique" class="headerlink" title="View IDs should be unique"></a>View IDs should be unique</h3><p>Now I decided to reuse my awesome layout by separating it into custom view and including it within another layout couple of times:<br><img src="http://trickyandroid.com/content/images/2014/11/Screen-Shot-2014-11-02-at-12-25-33-PM.png" alt=""><strong>But</strong> when I change configuration - my states are all messed up! Let’s see what we have in our <code>SparseArray</code>: <img src="http://trickyandroid.com/content/images/2014/11/Screen-Shot-2014-11-02-at-12-26-19-PM.png" alt=""></p>
+<p>Aha! Since states are stored based on view ID and <code>SparseArray</code> container is shared between entire view hierarchy - <strong>view IDs should be unique!</strong> Otherwise your state will be overwritten by another view with the same ID. In my case I have 2 views with id<code>@id/toggle</code>, so my states container holds only 1 instance of it - whichever came last during state store process.<br>Now when it is time to restore state - both views will get the same state from the container.</p>
+<p><em>How do we solve it you ask?</em></p>
+<p>The quick answer to that - have seperate <code>SparseArray</code> containers for each set of children, so states do not overlap:</p>
+<pre>public class MyCustomLayout extends LinearLayout {
+
+.........
+
+    @Override
+    public Parcelable onSaveInstanceState() {
+        Parcelable superState = super.onSaveInstanceState();
+        SavedState ss = new SavedState(superState);  
+        ss.childrenStates = new SparseArray();  
+        for (int i = 0; i &lt; getChildCount(); i++) {  
+            getChildAt(i).saveHierarchyState(ss.childrenStates);
+        }  
+        return ss;
+    }
+
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+        SavedState ss = (SavedState) state;
+        super.onRestoreInstanceState(ss.getSuperState());  
+        for (int i = 0; i &lt; getChildCount(); i++) {  
+            getChildAt(i).restoreHierarchyState(ss.childrenStates);
+        }  
+    }
+
+    @Override
+    protected void dispatchSaveInstanceState(SparseArray&lt;Parcelable&gt; container) {
+        dispatchFreezeSelfOnly(container);
+    }
+
+    @Override
+    protected void dispatchRestoreInstanceState(SparseArray&lt;Parcelable&gt; container) {
+        dispatchThawSelfOnly(container);
+    }
+
+    static class SavedState extends BaseSavedState {
+        SparseArray childrenStates;
+
+        SavedState(Parcelable superState) {  
+            super(superState);
+        }
+
+        private SavedState(Parcel in, ClassLoader classLoader) {
+            super(in);
+            childrenStates = in.readSparseArray(classLoader);  
+        }
+
+        @Override
+        public void writeToParcel(Parcel out, int flags) {
+            super.writeToParcel(out, flags);
+            out.writeSparseArray(childrenStates);  
+        }
+
+        public static final ClassLoaderCreator&lt;SavedState&gt; CREATOR
+                = new ClassLoaderCreator&lt;SavedState&gt;() {
+            @Override
+            public SavedState createFromParcel(Parcel source, ClassLoader loader) {
+                return new SavedState(source, loader);
+            }
+
+            @Override
+            public SavedState createFromParcel(Parcel source) {
+                return createFromParcel(null);
+            }
+
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }  
+        };
+    }  
+}</pre>
+
+<p>Let’s go throught this mess:</p>
+<ul>
+<li>In my custom layout I created a special <code>SaveState</code> class which holds super state<strong>and</strong> separate <code>SparseArray</code> for holding children states.</li>
+<li>in <code>onSaveInstanceState()</code> I store super state <strong>and</strong> store my children states manually into separate <code>SparseArray</code></li>
+<li>in <code>onRestoreInstanceState()</code> I restore super state and restore my children states manually from <code>SparseArray</code> created during <em>save</em> process</li>
+<li>remember that if this is a <code>ViewGroup</code> - <code>dispatchSaveInstanceState()</code> goes through children and saves their states? Since we are doing this manually now - we need to disable this behavior. Luckily there is a convinient method<code>dispatchFreezeSelfOnly()</code> (should be called from <code>dispatchSaveInstanceState()</code>) which tells Android to save only ViewGroup’s state and don’t touch it’s children.</li>
+<li>the same thing should be done inside <code>dispatchRestoreInstanceState()</code> - we call<code>dispatchThawSelfOnly()</code>. Now we told Android to restore only our own state - and let us deal with our children manually.</li>
+</ul>
+<p>And here is what our <code>SparseArray</code> looks like:<br><img src="http://trickyandroid.com/content/images/2014/11/Screen-Shot-2014-11-02-at-12-27-12-PM.png" alt=""></p>
+<p>As we can see, each view group is now in a separate <code>SparseArray</code>, so they don’t overlap and don’t override each other.</p>
+<p>State is saved! Profit!</p>
+<p>As usual, source code for this article can be found <a href="https://github.com/paveldudka/ViewStateSaveDemo" target="_blank" rel="noopener">on GitHub</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/05/09/观察者模式在android 上的最佳实践/" rel="next" title="观察者模式在android 上的最佳实践">
+                <i class="fa fa-chevron-left"></i> 观察者模式在android 上的最佳实践
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/05/29/google-io-2015/" rel="prev" title="Google I/O 2015主题演讲(分享)">
+                Google I/O 2015主题演讲(分享) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="uyan_frame"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="zhiwu_yan" />
+          <p class="site-author-name" itemprop="name">zhiwu_yan</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Why-do-we-need-to-save-View-state"><span class="nav-number">1.</span> <span class="nav-text">Why do we need to save View state?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#How-do-I-save-a-View-state"><span class="nav-number">2.</span> <span class="nav-text">How do I save a View state?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Saving-custom-state"><span class="nav-number">3.</span> <span class="nav-text">Saving custom state</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#View-IDs-should-be-unique"><span class="nav-number">4.</span> <span class="nav-text">View IDs should be unique</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhiwu_yan</span>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    
+
+    
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2133838"></script>
+      <!-- UY END -->
+    
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
