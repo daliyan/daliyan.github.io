@@ -1,0 +1,830 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="读书,2017,年终总结," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.png?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="对于Android开发者来说，对于RxJava应该是不陌生的，如果读者不了解RxJava是什么，推荐两篇文章给大家  RxJava中文文档 给 Android 开发者的 RxJava 详解  通过这两篇文章相信你能对RxJava有一个初步的了解,这篇文章不打算介绍RxJava的具体使用方式，因为我觉得使用方式在文档中其实写的很清楚，这些属于“术”的层面，站在更高层次去理解RxJava的原理和核心内">
+<meta name="keywords" content="读书,2017,年终总结">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入理解RxJava中的观察者模式">
+<meta property="og:url" content="http://yoursite.com/2018/01/19/深入理解RxJava中的观察者模式/index.html">
+<meta property="og:site_name" content="秋山">
+<meta property="og:description" content="对于Android开发者来说，对于RxJava应该是不陌生的，如果读者不了解RxJava是什么，推荐两篇文章给大家  RxJava中文文档 给 Android 开发者的 RxJava 详解  通过这两篇文章相信你能对RxJava有一个初步的了解,这篇文章不打算介绍RxJava的具体使用方式，因为我觉得使用方式在文档中其实写的很清楚，这些属于“术”的层面，站在更高层次去理解RxJava的原理和核心内">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://mcxiaoke.gitbooks.io/rxdocs/content/images/operators/create.png">
+<meta property="og:image" content="http://yoursite.com/images/rxjava的观察者模式.png">
+<meta property="og:image" content="http://yoursite.com/images/Observer-pattern-class-diagram">
+<meta property="og:updated_time" content="2018-01-19T14:54:39.385Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深入理解RxJava中的观察者模式">
+<meta name="twitter:description" content="对于Android开发者来说，对于RxJava应该是不陌生的，如果读者不了解RxJava是什么，推荐两篇文章给大家  RxJava中文文档 给 Android 开发者的 RxJava 详解  通过这两篇文章相信你能对RxJava有一个初步的了解,这篇文章不打算介绍RxJava的具体使用方式，因为我觉得使用方式在文档中其实写的很清楚，这些属于“术”的层面，站在更高层次去理解RxJava的原理和核心内">
+<meta name="twitter:image" content="https://mcxiaoke.gitbooks.io/rxdocs/content/images/operators/create.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/01/19/深入理解RxJava中的观察者模式/"/>
+
+
+
+
+
+  <title>深入理解RxJava中的观察者模式 | 秋山</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=62198010";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">秋山</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">要么读书要么旅行，身体和灵魂必须有一个在路上</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/19/深入理解RxJava中的观察者模式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhiwu_yan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="秋山">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">深入理解RxJava中的观察者模式</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-19T22:06:00+08:00">
+                2018-01-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书/" itemprop="url" rel="index">
+                    <span itemprop="name">读书</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书/2017/" itemprop="url" rel="index">
+                    <span itemprop="name">2017</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读书/2017/年终总结/" itemprop="url" rel="index">
+                    <span itemprop="name">年终总结</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>对于Android开发者来说，对于RxJava应该是不陌生的，如果读者不了解RxJava是什么，推荐两篇文章给大家</p>
+<ul>
+<li><a href="https://mcxiaoke.gitbooks.io/rxdocs/content/" target="_blank" rel="noopener">RxJava中文文档</a></li>
+<li><a href="https://gank.io/post/560e15be2dca930e00da1083" target="_blank" rel="noopener">给 Android 开发者的 RxJava 详解</a></li>
+</ul>
+<p>通过这两篇文章相信你能对RxJava有一个初步的了解,这篇文章不打算介绍RxJava的具体使用方式，因为我觉得使用方式在文档中其实写的很清楚，这些属于“术”的层面，站在更高层次去理解RxJava的原理和核心内容才是“道”，只有“道”和“术”相结合才能真正的掌握RxJava，本篇文章介绍RxJava中的观察者模式。</p>
+<h3 id="RxJava中观察者模式"><a href="#RxJava中观察者模式" class="headerlink" title="RxJava中观察者模式"></a>RxJava中观察者模式</h3><p>首先，我们来对RxJava做一个简单的定义和总结，来说明RxJava是什么，引用官方文档的一句话</p>
+<blockquote>
+<p>Rx = Observables  + LINQ  + Schedulers</p>
+</blockquote>
+<p>Rx本质上是一种编程模型，这种模型具有以下三个特性：</p>
+<ul>
+<li>Observables 使用观察者模式来实现</li>
+<li>LINQ 具有LINQ的特性，最主要其实使用了Lambda表达式</li>
+<li>Schedulers 线程调度器</li>
+</ul>
+<p>而RxJava 本质上就是使用Java语言实现了Rx的编程模型，通过RxJava解决了Android开发中的回调地狱，线程切换，最重要的是让业务的可扩展性更强，业务代码书写更规范。<br>今天我们来聊聊Rx模型的第一个特性-<strong>观察者模式</strong>。</p>
+<p>要想理解RxJava中的观察者模式我们先了解一下RxJava中的几个简单的概念：</p>
+<ul>
+<li>Observer/Subscriber</li>
+<li>Observable</li>
+</ul>
+<p><strong>Observer：</strong> 英文翻译为观察者，顾名思义它是一个观察者对象（Observer）或者称为订阅者（Subscriber），A对象订阅了某个事件，A对象观察了某个事件。A就是观察者。</p>
+<p><strong>Observable</strong> 既然有观察者，那必然有被观察者，Observable就是被观察者，或者更专业一点说：<strong>可观察事对象（Observable）</strong></p>
+<p>一个观察者(Observer)订阅一个可观察对象(Observable)，观察者对Observable发射的数据或数据序列作出响应。<strong>这句话其实也解释了为什么Rx被称为响应式编程</strong>。</p>
+<p>举一个很简单的例子来对RxJava是如何串联这几个对象做到响应式编程的，</p>
+<blockquote>
+<p>假设我们需要订阅A地的天气状况，当A地天气发生变化或者气温下降的时候通知到对应的订阅者。</p>
+</blockquote>
+<p>RxJava2中是这样处理的，</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">Observable.create(<span class="keyword">new</span> ObservableOnSubscribe&lt;Weather&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">subscribe</span><span class="params">(ObservableEmitter&lt;Weather&gt; observableEmitter)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                <span class="keyword">if</span> (!observableEmitter.isDisposed()) &#123;</span><br><span class="line">                    Weather weather = WeatherHelper.getCityWeather(<span class="string">"A"</span>);</span><br><span class="line">                    <span class="keyword">if</span>(weather != <span class="keyword">null</span>)&#123;</span><br><span class="line">                        observableEmitter.onNext(weather);</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        observableEmitter.onError(<span class="keyword">new</span> Exception(<span class="string">"获取A地天气失败"</span>));</span><br><span class="line">                    &#125;</span><br><span class="line">                    observableEmitter.onComplete();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;).map(<span class="keyword">new</span> Function&lt;Weather, Weather&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> Weather <span class="title">apply</span><span class="params">(Weather weather)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                <span class="comment">// 各种变换</span></span><br><span class="line">                <span class="keyword">return</span> weather;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">        .observeOn(AndroidSchedulers.mainThread())</span><br><span class="line">        .subscribeOn(Schedulers.io())</span><br><span class="line">        .subscribe(<span class="keyword">new</span> Consumer&lt;Weather&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">accept</span><span class="params">(Weather weather)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                <span class="comment">// 处理成功获取天气后的回调</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;, <span class="keyword">new</span> Consumer&lt;Throwable&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">accept</span><span class="params">(Throwable throwable)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                <span class="comment">// 处理成功获取天气失败的回调</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;, <span class="keyword">new</span> Action() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">                <span class="comment">// 结束方法</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br></pre></td></tr></table></figure>
+<p>使用输入输出流表示</p>
+<p><img src="https://mcxiaoke.gitbooks.io/rxdocs/content/images/operators/create.png" alt="image"></p>
+<p>上面代码省略了对数据的变换和组合操作，做最基础的代码分析。<br>分析上面的过程发现</p>
+<blockquote>
+<p>new ObservableOnSubscribe<weather>() </weather></p>
+</blockquote>
+<p>对应的是Observable的可观察对象；</p>
+<blockquote>
+<p>new Consumer<weather>()</weather></p>
+</blockquote>
+<p>对应的是观察者对象，Rx在观察者的基础上扩展了2个对象<br>new Consumer<throwable>() / new Action() 分别用于处理异常和一次任务完成的回调处理；使用了泛型的方式来处理不同可观察对象的数据传递。</throwable></p>
+<p>从代码层面来分析他是如何把各个对象组合成观察者模式的：<br>大概的图示如下：</p>
+<p><img src="/images/rxjava的观察者模式.png" alt="image"></p>
+<p>为什么图这样的？</p>
+<ul>
+<li>Observable对象创建了一个可观察对象ObservableOnSubscribe</li>
+<li>中间观察对象数据做各种变换处理（这个代码中省略），本质上还是返回了一个ObservableOnSubscri对象</li>
+<li>subscribeOn和observeOn对线程做简单的调度处理</li>
+<li><strong>Observable对象subscribe了Observer</strong></li>
+<li><strong>观察者主动去拉取可观察者的数据，</strong></li>
+</ul>
+<p>观察者主动去拉取可观察者的数据，这一点是从源码角度分析得出的，</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SchedulerSupport</span>(<span class="string">"none"</span>)</span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">subscribe</span><span class="params">(Observer&lt;? <span class="keyword">super</span> T&gt; observer)</span> </span>&#123;</span><br><span class="line">     ObjectHelper.requireNonNull(observer, <span class="string">"observer is null"</span>);</span><br><span class="line"></span><br><span class="line">     <span class="keyword">try</span> &#123;</span><br><span class="line">         observer = RxJavaPlugins.onSubscribe(<span class="keyword">this</span>, observer);</span><br><span class="line">         ObjectHelper.requireNonNull(observer, <span class="string">"Plugin returned null Observer"</span>);</span><br><span class="line">         <span class="keyword">this</span>.subscribeActual(observer);</span><br><span class="line">     &#125; <span class="keyword">catch</span> (NullPointerException var4) &#123;</span><br><span class="line">         <span class="keyword">throw</span> var4;</span><br><span class="line">     &#125; <span class="keyword">catch</span> (Throwable var5) &#123;</span><br><span class="line">         Exceptions.throwIfFatal(var5);</span><br><span class="line">         RxJavaPlugins.onError(var5);</span><br><span class="line">         NullPointerException npe = <span class="keyword">new</span> NullPointerException(<span class="string">"Actually not, but can't throw other exceptions due to RS"</span>);</span><br><span class="line">         npe.initCause(var5);</span><br><span class="line">         <span class="keyword">throw</span> npe;</span><br><span class="line">     &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>简单来理解就是A().B().C().subscribe(xxx);A().B().C()依然返回了一个 Observable<t>对象,最终执行了subscribe方法来，源码中可以看到</t></p>
+<blockquote>
+<p>subscribeActual(observer);</p>
+</blockquote>
+<p>方法最终拉取可观察者的数据，也就是执行了ObservableOnSubscribe<weather>的subscribe方法。</weather></p>
+<p>至此，我们有发现有几个问题无法解释：</p>
+<ul>
+<li>为什么是Observable对象订阅了Observer，传统的观察者模式不应该是Observer订阅Observable吗？</li>
+<li>为什么是Observer去主动拉取事件信息，而不是可观察对象主动推动呢？是否有违观察者模式的定义？</li>
+</ul>
+<h3 id="观察者模式的定义和变种"><a href="#观察者模式的定义和变种" class="headerlink" title="观察者模式的定义和变种"></a>观察者模式的定义和变种</h3><p>聊到这里必须理清一下什么是观察者模式，观察者模式真的有我们所理解的这么简单吗？我们先看看维基百科关于观察者模式的简洁</p>
+<blockquote>
+<p>观察者模式是软件设计模式的一种。在此种模式中，一个目标对象管理所有相依于它的观察者对象，并且在它本身的状态改变时主动发出通知。这通常透过呼叫各观察者所提供的方法来实现。此种模式通常被用来实时事件处理系统。</p>
+</blockquote>
+<p><img src="/images/Observer-pattern-class-diagram" alt="image"></p>
+<p>注意这一句话“<strong>并且在它本身的状态改变时主动发出通知</strong>”，这是官方的设计模式UML图，实际上在观察者模式中还存在着另外一种观察模式，那就是拉取模型：</p>
+<ul>
+<li>推模型，事件通知源主动发起消息推送，订阅者自动接收数据</li>
+<li>拉模型，订阅者主动去拉取事件通知</li>
+</ul>
+<p>拉取模型和推送模型唯一的区别在于notify方法的触发是依赖于订阅者主动发起通知，事件源才会把数据推送过来的。在执行notify方法的时候，会主动请求事件源的数据：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">notify</span><span class="params">(Subject subject)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 主动去事件源里拿数据</span></span><br><span class="line">    State state = ((ConcreteSubjectA) subject).getState();</span><br><span class="line">    System.out.println(getName() + <span class="string">"观察者状态更新为："</span> + state);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这就是推模型的实现；在Android中典型如消息推动，如果App正常接受消息，那么消息通知是推动过去的，如果App没有启动，那么App会主动去消息服务端拉取未接收的消息。</p>
+<h3 id="理解RxJava中的观察者模式"><a href="#理解RxJava中的观察者模式" class="headerlink" title="理解RxJava中的观察者模式"></a>理解RxJava中的观察者模式</h3><p>明白了观察者模式的2种基本模型，我们来理解一下前面的2个问题</p>
+<ul>
+<li>为什么是Observable对象订阅了Observer，传统的观察者模式不应该是Observer订阅Observable吗？</li>
+<li>为什么是Observer去主动拉取事件信息，而不是可观察对象主动推动呢？是否有违观察者模式的定义？</li>
+</ul>
+<p>第一层意义：subscribe方法本质上是一个注册方法，所以这就解释了第一个问题，并不是Observable对象订阅了Observer，而是向Observable注册了一个观察者（Observer）；<br>第二层意义：subscribe方法在注册了一个观察者的同时，向事件源拉进行消息的拉取</p>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SchedulerSupport</span>(<span class="string">"none"</span>)</span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">subscribe</span><span class="params">(Observer&lt;? <span class="keyword">super</span> T&gt; observer)</span> </span>&#123;</span><br><span class="line">     ObjectHelper.requireNonNull(observer, <span class="string">"observer is null"</span>);</span><br><span class="line"></span><br><span class="line">     <span class="keyword">try</span> &#123;</span><br><span class="line">         observer = RxJavaPlugins.onSubscribe(<span class="keyword">this</span>, observer);</span><br><span class="line">         ObjectHelper.requireNonNull(observer, <span class="string">"Plugin returned null Observer"</span>);</span><br><span class="line">         <span class="keyword">this</span>.subscribeActual(observer);</span><br><span class="line">     &#125; <span class="keyword">catch</span> (NullPointerException var4) &#123;</span><br><span class="line">         <span class="keyword">throw</span> var4;</span><br><span class="line">     &#125; <span class="keyword">catch</span> (Throwable var5) &#123;</span><br><span class="line">         Exceptions.throwIfFatal(var5);</span><br><span class="line">         RxJavaPlugins.onError(var5);</span><br><span class="line">         NullPointerException npe = <span class="keyword">new</span> NullPointerException(<span class="string">"Actually not, but can't throw other exceptions due to RS"</span>);</span><br><span class="line">         npe.initCause(var5);</span><br><span class="line">         <span class="keyword">throw</span> npe;</span><br><span class="line">     &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>subscribeActual就是向事件源拉取消息，类似于前面提到的getState()方法。只不过这个方法不直接返回值，而是通过Consumer回调的方式返回。</p>
+<p>至此，整个过程就非常清晰了：</p>
+<blockquote>
+<p>创建一个事件源（creat方法）-》对数据源做变换（Map..）-》通过subscribe方法注册一个观察者，并执行拉取数据操作-》线程变换-》通过回调返回数据结果</p>
+</blockquote>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>RxJava中对观察者模式的理解是最关键的，理解了观察者模式后，才能对RxJava的整个设计有本质的了解，知其然更要知其所以然，subscribe方法的两层含义需要结合源码仔细体会，然后在实践中不断的加深理解，才能做到融会贯通。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/读书/" rel="tag"># 读书</a>
+          
+            <a href="/tags/2017/" rel="tag"># 2017</a>
+          
+            <a href="/tags/年终总结/" rel="tag"># 年终总结</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/25/关于终端业务组件化的几点思考/" rel="next" title="关于终端业务组件化的几点思考">
+                <i class="fa fa-chevron-left"></i> 关于终端业务组件化的几点思考
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="uyan_frame"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="zhiwu_yan" />
+          <p class="site-author-name" itemprop="name">zhiwu_yan</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              
+                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-name">分类</span>
+              
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#RxJava中观察者模式"><span class="nav-number">1.</span> <span class="nav-text">RxJava中观察者模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#观察者模式的定义和变种"><span class="nav-number">2.</span> <span class="nav-text">观察者模式的定义和变种</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#理解RxJava中的观察者模式"><span class="nav-number">3.</span> <span class="nav-text">理解RxJava中的观察者模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhiwu_yan</span>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+    
+
+    
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2133838"></script>
+      <!-- UY END -->
+    
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
